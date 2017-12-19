@@ -1,7 +1,7 @@
 module ListFunctions where
 
-myHeadFunc :: [Char] -> [Char]    
-myHeadFunc x = x ++ "!" 
+myGreet :: [Char] -> [Char]    
+myGreet x = x ++ "!" 
 
 charAt5thPost :: [Char] -> Char
 charAt5thPost x = x !! 5
@@ -15,6 +15,5 @@ thirdCharInInput x = x !! 2
 nthCharInString :: Int -> Char
 nthCharInString n = "Curry is awesome" !! n
 
-rvrs :: [Char] -> [Char]
-
-rvrs = "Abcdef"
+areaCircle :: Floating x => x -> x
+areaCircle r = pi * r * r
