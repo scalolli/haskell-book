@@ -12,28 +12,28 @@
 2. Division / needs a fractional and by default numbers are polymorphic constants
 In the below case x ends up being a Fractional hence the below type
 
-  ```
-  :t \x -> (x/3) * 5
-  \x -> (x/3) * 5 :: Fractional a => a -> a
-  ```
+      ```
+      :t \x -> (x/3) * 5
+      \x -> (x/3) * 5 :: Fractional a => a -> a
+      ```
   
 3. Its obvious because we alreay know its [Char]
 
-  ```
-  :t \x -> take x "hey you"
-  \x -> take x "hey you" :: Int -> [Char]
-  ```
+      ```
+      :t \x -> take x "hey you"
+      \x -> take x "hey you" :: Int -> [Char]
+      ```
 
 4. In the below case length returns an Int hence we will need a more specific type for comparison so type of x becomes Int
 
-  ```
-  *TypeInference> :t \x -> x > (length [1..10])
-  \x -> x > (length [1..10]) :: Int -> Bool
-  ```
+      ```
+      *TypeInference> :t \x -> x > (length [1..10])
+      \x -> x > (length [1..10]) :: Int -> Bool
+      ```
   
 5. Simple we already know one parameter is a Char hence the type `Char -> Bool`
   
-  ```
-  *TypeInference> :t \x -> x < 'z'
-  \x -> x < 'z' :: Char -> Bool
-  ```
+      ```
+      *TypeInference> :t \x -> x < 'z'
+      \x -> x < 'z' :: Char -> Bool
+      ```
