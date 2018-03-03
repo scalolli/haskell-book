@@ -37,3 +37,10 @@ In the below case x ends up being a Fractional hence the below type
       *TypeInference> :t \x -> x < 'z'
       \x -> x < 'z' :: Char -> Bool
       ```
+      
+## Chapter Exercises
+
+1. A value of type `[a]` is a lost whose elements are all of some type a
+2. A function of type `[[a]] -> [a]` could take a list of strings as an argument
+3. A function of type `[a] -> Int -> a` returns one element of type a
+4. A function of type `(a, b) -> a` take tuple as argument and returns the first value
