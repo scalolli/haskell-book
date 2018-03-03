@@ -38,16 +38,16 @@ In the below case x ends up being a Fractional hence the below type
       \x -> x < 'z' :: Char -> Bool
       ```
       
-## Chapter Exercises
+# Chapter Exercises
 
-# Multiple Choice
+## Multiple Choice
 
 1. A value of type `[a]` is a lost whose elements are all of some type a
 2. A function of type `[[a]] -> [a]` could take a list of strings as an argument
 3. A function of type `[a] -> Int -> a` returns one element of type a
 4. A function of type `(a, b) -> a` take tuple as argument and returns the first value
 
-# Determining the type
+## Determining the type
 
 1. Determine the value and the type returned
     * `(* 9) 6` returns `54` and the type is `Num a => a`
