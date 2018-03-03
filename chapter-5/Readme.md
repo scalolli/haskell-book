@@ -21,3 +21,7 @@ In the below case x ends up being a Fractional hence the below type
 *TypeInference> :t \x -> x > (length [1..10])
 \x -> x > (length [1..10]) :: Int -> Bool
 
+5. Simple we already know one parameter is a Char hence the type `Char -> Bool`
+
+*TypeInference> :t \x -> x < 'z'
+\x -> x < 'z' :: Char -> Bool
