@@ -79,11 +79,11 @@ In the below case x ends up being a Fractional hence the below type
 # Does it Compile
 
 1. 
-   ```
-      bigNum = (^) 5 $ 10
-      wahoo = bigNum $ 10      
-   ```   
-   Fails at line 2
+      ```
+            bigNum = (^) 5 $ 10
+            wahoo = bigNum $ 10      
+      ```   
+      Fails at line 2
 
 2. 
       ```
@@ -92,21 +92,21 @@ In the below case x ends up being a Fractional hence the below type
       Prelude> let y = print "wohoo !"
       Prelude> let z = x "blah"
       ```
-  Everything compiles fine
+      Everything compiles fine
 
 3.  
-    ```
-      a = (+) 
-      b=5
-      c = b 10
-      d = c 200      
-    ```  
-    Fails at line 3, change to `c = a 10`  
+      ```
+            a = (+) 
+            b=5
+            c = b 10
+            d = c 200      
+      ```  
+      Fails at line 3, change to `c = a 10`  
 
 4. 
-    ```
-      a = 12 + b
-      b = 10000 * c
-    ```
-   Neither compile   
+      ```
+            a = 12 + b
+            b = 10000 * c
+      ```
+      Neither compile   
 
