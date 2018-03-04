@@ -80,8 +80,8 @@ In the below case x ends up being a Fractional hence the below type
 
 1. 
       ```
-            bigNum = (^) 5 $ 10
-            wahoo = bigNum $ 10      
+      bigNum = (^) 5 $ 10
+      wahoo = bigNum $ 10      
       ```   
       Fails at line 2
 
@@ -96,17 +96,17 @@ In the below case x ends up being a Fractional hence the below type
 
 3.  
       ```
-            a = (+) 
-            b=5
-            c = b 10
-            d = c 200      
+      a = (+) 
+      b=5
+      c = b 10
+      d = c 200      
       ```  
       Fails at line 3, change to `c = a 10`  
 
 4. 
       ```
-            a = 12 + b
-            b = 10000 * c
+      a = 12 + b
+      b = 10000 * c
       ```
       Neither compile   
 
