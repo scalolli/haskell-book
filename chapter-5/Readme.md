@@ -57,4 +57,52 @@ In the below case x ends up being a Fractional hence the below type
     * `length [1, 2, 3, 4, 5]` returns `5` and the type is `Int` since length returns an Int
     * `(length [1, 2, 3, 4]) > (length "TACOCAT")` returns `False` and type is `Bool`
 
-2. WIP..
+2. ```
+      x=5 
+      y=x+5
+      w = y * 10
+   ```
+   Type of w is `Num a => a`   
+
+3. `z y = y * 10` type of `z` is `Num a => a -> a`   
+4. `let f = 4 / y` type of `f` is `Fractional a => a`
+5. Given
+      ```
+      x = "Julie"
+      y = " <3 "
+      z = "Haskell"
+      f = x ++ y ++ z
+      ```
+      the type of f is `[Char]`
+
+
+# Does it Compile
+
+1. ```
+      bigNum = (^) 5 $ 10
+      wahoo = bigNum $ 10      
+   ```   
+   Fails at line 2
+
+2. ```
+      Prelude> let wahoo = bigNum
+      Prelude> let x = print
+      Prelude> let y = print "wohoo !"
+      Prelude> let z = x "blah"
+  ```
+  Everything compiles fine
+
+3.  ```
+      a = (+) 
+      b=5
+      c = b 10
+      d = c 200      
+    ```  
+    Fails at line 3, change to `c = a 10`  
+
+4. ```
+      a = 12 + b
+      b = 10000 * c
+   ```
+   Neither compile   
+
