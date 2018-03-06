@@ -11,6 +11,7 @@ instance Eq TwoIntegers where
     (==) (Two num1 num2) (Two num1' num2') = 
         num1 == num1' && num2 == num2'
 
+
 data StringOrInt = 
     TisAnInt Int | TisAString String
 
@@ -21,9 +22,16 @@ instance Eq StringOrInt where
         str == str'
     (==) _ _ = False       
 
+
 data Pair a = 
     Pair a a 
 
 instance Eq a => Eq (Pair a) where         
     (==) (Pair x y) (Pair x' y') = x == x' && y == y'
         
+        
+data Tuple a b = 
+    Tuple a b
+
+instance (Eq a, Eq b) => Eq (Tuple a b) where  
+    (==) (Tuple x y) (Tuple x' y') = x == x' && y == y'
