@@ -43,4 +43,13 @@ data Which a =
 instance Eq a => Eq (Which a) where 
     (==) (ThisOne a) (ThisOne a') = a == a'
     (==) (ThatOne a) (ThatOne a') = a == a'  
-    (==)        _     _           = False       
+    (==)        _     _           = False    
+
+
+data EitherOr a b =
+    Hello a | Goodbye b
+
+instance (Eq a, Eq b) => Eq (EitherOr a b) where    
+    (==) (Hello a) (Hello a') = a == a'
+    (==) (Goodbye a) (Goodbye a') = a == a'
+    (==)        _     _           = False
