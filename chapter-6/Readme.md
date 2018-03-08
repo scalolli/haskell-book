@@ -10,4 +10,4 @@ Does it typecheck?
         printPerson person = putStrLn person
     ```    
 
-No point doing them in readme anymore, more in (ChapterExercises.hs)
+No point doing them in readme anymore, all done [in](ChapterExercises.hs) 
