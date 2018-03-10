@@ -43,3 +43,6 @@ printUser (RegisteredUser
             (Username name)
             (AccountNumber accountNumber)) = 
             putStrLn $ name ++ " " ++ show accountNumber
+
+fexercise :: (a , b, c) -> (d, e, f) -> ((a, d), (c, f))           
+fexercise (a , b, c) (d, e, f) = ((a, d), (c, f))           
