@@ -42,4 +42,4 @@ printUser UnregisteredUser =
 printUser (RegisteredUser 
             (Username name)
             (AccountNumber accountNumber)) = 
-            putStrLn $ name ++ " " ++ show accountNumber             
+            putStrLn $ name ++ " " ++ show accountNumber
