@@ -45,4 +45,37 @@ printUser (RegisteredUser
             putStrLn $ name ++ " " ++ show accountNumber
 
 fexercise :: (a , b, c) -> (d, e, f) -> ((a, d), (c, f))           
-fexercise (a , b, c) (d, e, f) = ((a, d), (c, f))           
+fexercise (a , b, c) (d, e, f) = ((a, d), (c, f))    
+
+funcZ x = 
+    case x + 1 == 1 of
+        True -> "Awesome"
+        False -> "wut"
+
+pal xs = 
+    case xs == reverse xs of
+        True -> "Is a palindrome"
+        False -> "Not a palindrome"  
+        
+pal' xs = 
+    case y of
+        True -> "palindrome"        
+        False -> "not a palindrome"
+        where y = xs == reverse xs
+
+functionC x y = 
+    case x > y of 
+        True -> x
+        False -> y
+
+ifEvenAdd2 x = 
+    case y of 
+        True -> x + 2
+        False -> x
+        where y = even x
+
+nums x = 
+    case compare x 0 of 
+        LT -> -1
+        GT -> 1
+        EQ -> 0        
