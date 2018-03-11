@@ -18,3 +18,15 @@ module HigherOrder where
             GT -> reportBoss e e'
             EQ -> putStrLn "Neither employee is the boss"
             LT -> (flip reportBoss) e e'
+
+    coderRulesCEOsDrool :: (Employee -> Employee -> Ordering)            
+    coderRulesCEOsDrool Coder Coder = EQ
+    coderRulesCEOsDrool Coder _     = GT 
+    coderRulesCEOsDrool _ Coder     = LT
+    coderRulesCEOsDrool e e'  = compare e e'
+
+    dodgy x y = x + y * 10
+    oneIsOne = dodgy 1 
+    oneIsTwo = (flip dodgy) 2
+
+    
