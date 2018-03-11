@@ -29,4 +29,18 @@ module HigherOrder where
     oneIsOne = dodgy 1 
     oneIsTwo = (flip dodgy) 2
 
+    myAbs x
+        | x < 0 = (-x)
+        | otherwise = x
+
+    bloodNa x
+        | x < 135 = "too low"
+        | x > 145 = "too high"
+        | otherwise = "just right"
+
+    isRight :: (Num a, Eq a) => a -> a -> a -> String
+    isRight x y z
+        | x^2 + y^2 == z^2 = "is right angle"
+        | otherwise = "not a right angle"
+
     
