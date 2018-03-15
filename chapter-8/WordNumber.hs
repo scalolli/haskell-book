@@ -19,17 +19,7 @@ digits :: Int -> [Int]
 digits n = go n []
     where go num acc
             | num < 10 = num : acc
-            | otherwise = go quotient accumulator
-            where
-              quotient = num `div` 10
-              remainder = num `mod` 10
-              accumulator = remainder : acc
+            | otherwise = go (num `div` 10) ((num `mod` 10) : acc)
 
 wordNumber :: Int -> String
-wordNumber n = concatString
-    where digitsInWords = map digitToWord (digits n)
-          interspersed = intersperse "-" digitsInWords
-          concatString = concat interspersed
-
-
-
+wordNumber n = concat $ intersperse "-" $ map digitToWord (digits n)
