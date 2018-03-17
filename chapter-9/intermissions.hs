@@ -44,6 +44,17 @@ shouldEqual =
 main :: IO ()
 main = print $ "Are they equal " ++ show (myLines sentences == shouldEqual)
 
+
+-- Generators
+
+acro :: String -> String
+acro xs = [x | x <- xs, x `elem` ['A'..'Z']]
+
+
+mySqr = [x^2 | x <- [1..5]]
+myCube = [y^3 | y <- [1..5]]
+myTuples = [(x, y) | x <- mySqr, y <- myCube, x < 50, y < 50]
+
 myLength :: [a] -> Integer
 myLength [] = 0
 myLength (x:xs) = 1 + myLength xs
