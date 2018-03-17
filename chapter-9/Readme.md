@@ -1,4 +1,4 @@
-** Intermission: Is it in normal Form?
+**Intermission: Is it in normal Form?
 
 Some more [Stack Overflow](https://stackoverflow.com/questions/6872898/haskell-what-is-weak-head-normal-form) and
 [haskell wiki](https://wiki.haskell.org/Weak_head_normal_form)
