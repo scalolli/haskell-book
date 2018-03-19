@@ -58,3 +58,13 @@ myTuples = [(x, y) | x <- mySqr, y <- myCube, x < 50, y < 50]
 myLength :: [a] -> Integer
 myLength [] = 0
 myLength (x:xs) = 1 + myLength xs
+
+itIsMystery :: [Char] -> [Bool]
+itIsMystery xs = map (\x -> elem x "aeiou") xs
+
+multiplesOfThree :: [Integer] -> [Integer]
+multiplesOfThree xs = filter (\x -> (x `mod` 3) == 0) xs
+
+lengthOfMultiples =  length . multiplesOfThree
+
+filterArticles xs = filter (\x -> (x /= "the") || (x /= "a") || (x /= "an")) (words xs)
