@@ -68,3 +68,12 @@ multiplesOfThree xs = filter (\x -> (x `mod` 3) == 0) xs
 lengthOfMultiples =  length . multiplesOfThree
 
 filterArticles xs = filter (\x -> (x /= "the") || (x /= "a") || (x /= "an")) (words xs)
+
+
+zip' :: [a] -> [b] -> [(a,b)]
+zip' = zipWith' (\x -> \y -> (x, y))
+
+zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith' _ _ [] = []
+zipWith' _ [] _ = []
+zipWith' f (x:xs) (y:ys) = (f x y) : (zipWith' f xs ys)
