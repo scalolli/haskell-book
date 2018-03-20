@@ -38,3 +38,13 @@ myElem f a (x:xs) =
 
 myElemUsingAny :: Eq a => a -> [a] -> Bool
 myElemUsingAny = myElem (==)
+
+
+myReverse :: [a] -> [a]
+myReverse [] = []
+myReverse (x:xs) = myReverse xs ++ [x]
+
+
+squish :: [[a]] -> [a]
+squish [[]] = []
+squish (x:xs) = [x] ++ squish xs
