@@ -2,10 +2,16 @@ module Cipher where
 
 import Data.Char
 
-myCipher :: [Char] -> [Char]
-myCipher [] = []
-myCipher (x:xs) = (shift x):(myCipher xs)
+encode :: [Char] -> [Char]
+encode xs = map rshift xs
 
-shift :: Char -> Char
-shift x = chr $ ((ord x) + 3) `mod` 26
+shift :: Int -> Char -> Char
+shift numOfChars x
+    | isLower x = chr $ ord 'a' + (mod (ord x - ord 'a' + numOfChars) 26)
+    | otherwise = chr $ ord 'A' + (mod (ord x - ord 'A' + numOfChars) 26)
 
+rshift = shift 3
+lshift = shift (-3)
+
+decode :: [Char] -> [Char]
+decode xs = map lshift xs
