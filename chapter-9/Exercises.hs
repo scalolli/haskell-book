@@ -46,5 +46,12 @@ myReverse (x:xs) = myReverse xs ++ [x]
 
 
 squish :: [[a]] -> [a]
-squish [[]] = []
-squish (x:xs) = [x] ++ squish xs
+squish [] = []
+squish (x:xs) = x ++ squish xs
+
+squishMap :: (a -> [b]) -> [a] -> [b]
+squishMap f [] = []
+squishMap f (x : xs) = (f x) ++ squishMap f xs
+
+squishAgain :: [[a]] -> [a]
+squishAgain xs = squishMap (\x -> x) xs
