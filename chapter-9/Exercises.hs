@@ -68,3 +68,9 @@ myMaximumBy _ [x] = x
 myMaximumBy f (x:xs) = 
     if (f x y == GT) then x else y
         where y = myMaximumBy f xs
+
+myMaximum :: (Ord a) => [a] -> a
+myMaximum xs = myMaximumBy (\x y -> if(x >= y) then GT else LT) xs        
+
+myMinimum :: (Ord a) => [a] -> a
+myMinimum xs = myMinimumBy (\x y -> if(x <= y) then LT else GT) xs        
