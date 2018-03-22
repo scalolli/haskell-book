@@ -54,22 +54,17 @@ squishMap f [] = []
 squishMap f (x : xs) = (f x) ++ squishMap f xs
 
 squishAgain :: [[a]] -> [a]
-squishAgain xs = squishMap (\x -> x) xs
-
-myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
-myMaximumBy _ [] = error "Minimum of empty list"
-myMaximumBy _ [x] = x
-myMaximumBy f (x:xs) = findElemByComparisonFunction f (>= GT) xs x
+squishAgain xs = squishMap (\x -> x) xs                        
 
 myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
-myMinimumBy _ [] = error "Minimum of empty list"
 myMinimumBy _ [x] = x
-myMinimumBy f (x :xs) = findElemByComparisonFunction f (<= LT) xs x
+myMinimumBy f (x :xs) = 
+    if (f x y == LT) then x else y
+    where y = myMinimumBy f xs
 
-findElemByComparisonFunction :: (a -> a -> Ordering) -> (Ordering -> Bool) -> [a] -> a -> a                        
-findElemByComparisonFunction f g xs acc = 
-    case xs of
-        [] -> acc
-        (y:ys) -> findElemByComparisonFunction f g ys minValue
-            where
-                minValue = if (g $ f y acc) then y else acc
+
+myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
+myMaximumBy _ [x] = x
+myMaximumBy f (x:xs) = 
+    if (f x y == GT) then x else y
+        where y = myMaximumBy f xs
