@@ -21,11 +21,23 @@ theDatabase =
 filterDbDate :: [DatabaseItem] -> [UTCTime]
 filterDbDate db = foldr collectUTCTime [] db
 
-filterDate :: DatabaseItem -> Bool
-filterDate (DbDate utcTime) = True
-filterDate _  = False
-
-
 collectUTCTime :: DatabaseItem -> [UTCTime] -> [UTCTime]
 collectUTCTime (DbDate utcTime) xs = utcTime:xs
 collectUTCTime _  xs = xs
+
+
+filterDbNumber :: [DatabaseItem] -> [Integer]
+filterDbNumber db = foldr collectDbInteger [] db
+
+collectDbInteger :: DatabaseItem -> [Integer] -> [Integer]
+collectDbInteger (DbNumber num) xs = num:xs
+collectDbInteger _ xs = xs
+
+
+mostRecent :: [DatabaseItem] -> UTCTime
+mostRecent db = (myMaximum . filterDbDate) $ db
+
+myMaximum :: (Ord a) => [a] -> a
+myMaximum [x] = x
+myMaximum (x:xs) = if (x >= y) then x else y
+            where y = myMaximum xs
