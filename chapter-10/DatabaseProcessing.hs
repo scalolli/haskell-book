@@ -41,3 +41,6 @@ myMaximum :: (Ord a) => [a] -> a
 myMaximum [x] = x
 myMaximum (x:xs) = if (x >= y) then x else y
             where y = myMaximum xs
+
+sumDb :: [DatabaseItem] -> Integer
+sumDb db = sum . filterDbNumber $ db
