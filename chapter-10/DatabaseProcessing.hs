@@ -44,3 +44,11 @@ myMaximum (x:xs) = if (x >= y) then x else y
 
 sumDb :: [DatabaseItem] -> Integer
 sumDb db = sum . filterDbNumber $ db
+
+
+avgDb :: [DatabaseItem] -> Double
+avgDb db = summedValues / len
+        where
+            dbNumbers = filterDbNumber db
+            summedValues = fromIntegral $ sum dbNumbers
+            len = fromIntegral $ length dbNumbers
