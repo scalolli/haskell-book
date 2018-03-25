@@ -67,16 +67,11 @@ squishAgain :: [[a]] -> [a]
 squishAgain = foldr ((++) . squishMap (\x -> [x])) []
 
 
-orderFMax :: (a -> a -> Ordering) -> a -> a -> a
-orderFMax f a b = if ((f a b) == GT) then a else b
-
 myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
-myMaximumBy f (x:xs) = foldl (orderFMax f) x (x:xs)
-
-
-orderFMin :: (a -> a -> Ordering) -> a -> a -> a
-orderFMin f a b = if ((f a b) == LT) then a else b
+myMaximumBy f (x:xs) = foldl orderFMax x (x:xs)
+          where orderFMax a b = if ((f a b) == GT) then a else b
 
 
 myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
-myMinimumBy f (x:xs) = foldl (orderFMin f) x (x:xs)
+myMinimumBy f (x:xs) = foldl orderFMin x (x:xs)
+        where orderFMin a b = if ((f a b) == LT) then a else b
