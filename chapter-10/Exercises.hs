@@ -43,3 +43,13 @@ myElem' e = any (==e)
 myReverse :: [a] -> [a]
 myReverse = foldl (flip (:)) []
 
+
+myMap :: (a -> b) -> [a] -> [b]
+myMap f = foldr ((:) . f) []
+
+
+myFilterWith :: (a -> Bool) -> a -> [a] -> [a]
+myFilterWith f a xs = if(f a) then a:xs else xs
+
+myFilter :: (a -> Bool) -> [a] -> [a]
+myFilter f = foldr (myFilterWith f) []
