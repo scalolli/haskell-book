@@ -53,3 +53,30 @@ myFilterWith f a xs = if(f a) then a:xs else xs
 
 myFilter :: (a -> Bool) -> [a] -> [a]
 myFilter f = foldr (myFilterWith f) []
+
+
+squish :: [[a]] -> [a]
+squish = foldr (++) []
+
+
+squishMap :: (a -> [b]) -> [a] -> [b]
+squishMap f = foldr ((++) . f) []
+
+
+squishAgain :: [[a]] -> [a]
+squishAgain = foldr ((++) . squishMap (\x -> [x])) []
+
+
+orderFMax :: (a -> a -> Ordering) -> a -> a -> a
+orderFMax f a b = if ((f a b) == GT) then a else b
+
+myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
+myMaximumBy f (x:xs) = foldl (orderFMax f) x (x:xs)
+
+
+orderFMin :: (a -> a -> Ordering) -> a -> a -> a
+orderFMin f a b = if ((f a b) == LT) then a else b
+
+
+myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
+myMinimumBy f (x:xs) = foldl (orderFMin f) x (x:xs)
