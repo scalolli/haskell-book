@@ -43,3 +43,11 @@ areCars = map isCar
 getManu :: Vehicle -> Manufacturer
 getManu (Car x _) = x
 getManu _ = error "Not a car"
+
+
+data Example =
+        MakeExample deriving (Eq, Show)
+
+
+data AnotherExample =
+        AnotherMakeExample Int deriving (Eq, Show)
