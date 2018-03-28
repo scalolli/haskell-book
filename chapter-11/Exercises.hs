@@ -7,5 +7,5 @@ module Exercises where
     isSubsetOf :: (Eq a)
                 => [a]
                 -> [a]
-                -> Bool
+                -> Bool                
     isSubsetOf = undefined
