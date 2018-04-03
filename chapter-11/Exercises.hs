@@ -4,8 +4,13 @@ module Exercises where
     doubleUp [] = []
     doubleUp xs@(x:_) = x:xs
 
-    isSubsetOf :: (Eq a)
+    isSubseqOf :: (Eq a)
                 => [a]
                 -> [a]
-                -> Bool                
-    isSubsetOf = undefined
+                -> Bool   
+    isSubseqOf [] _ = True
+    isSubseqOf _ [] = False                 
+    isSubseqOf l@(y:ys) (x:xs) = 
+        if (y == x) 
+            then isSubseqOf ys xs
+             else isSubseqOf l xs
