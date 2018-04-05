@@ -1,14 +1,15 @@
 module PhoneSimulator where
 
     import Data.Char
+    import Data.List
 
     type Digit = Char
-    type Symbol = Char
     type Presses = Int
+    type Occurrences = Int
 
     data Key = Key {
         digit :: Digit,
-     symbols :: [Symbol] }
+     symbols :: [Digit] }
      deriving (Eq, Show)
     data DaPhone = DaPhone [Key] deriving (Eq, Show)
 
@@ -35,14 +36,14 @@ module PhoneSimulator where
     reverseTaps (DaPhone keys) ch = keyPresses
             where
                 key = findKey keys (toLower ch)
-                presses = findIndex (symbols key) (toLower ch)
+                presses = myFindIndex (symbols key) (toLower ch)
                 keyPresses =
                     if(isUpper ch)
                      then [('*', 1)] ++ [(digit key, presses + 1)]
                       else [(digit key, presses + 1)]
 
-    findIndex :: [Char] -> Char -> Int
-    findIndex xs ch = go xs ch 0
+    myFindIndex :: [Char] -> Char -> Int
+    myFindIndex xs ch = go xs ch 0
         where
             go [] char index = index
             go (y:ys) char index =
@@ -60,10 +61,49 @@ module PhoneSimulator where
     cellPhonesDead p x = concat $ map (reverseTaps p) x
 
     fingerTaps :: [(Digit, Presses)] -> Presses
-    fingerTaps p = foldr (\a b -> (snd a) + b) 0 p
+    fingerTaps p = foldr (\(d, p) b -> p + b) 0 p
 
     pressesForMessage :: DaPhone -> [String] -> [(Digit, Presses)]
     pressesForMessage p msg = concat $ map (cellPhonesDead p) msg
+
+    mostPopularLetter :: String -> Char
+    mostPopularLetter word = letter
+            where
+                ((letter, occ, _):xs) = lettersSortedByOccurrences word
+
+    lettersSortedByOccurrences :: String -> [(Digit, Occurrences, Presses)]
+    lettersSortedByOccurrences word = sortedList
+            where
+                digitsToPresses = map (f phone) word
+                usymbols = uniqueSymbols digitsToPresses
+                symbolsWithOccurences = pressesForEachSymbol usymbols digitsToPresses
+                sortedList = sortOccurrenceList symbolsWithOccurences
+
+    sortOccurrenceList :: [(Digit, Occurrences, Presses)] -> [(Digit, Occurrences, Presses)]
+    sortOccurrenceList = sortBy (\(d1, occ1, _) (d2, occ2, _) -> (flip compare) occ1 occ2)
+
+    f :: DaPhone -> Char -> (Digit, Presses)
+    f phone ch = (ch, presses)
+        where
+            presses = fingerTaps $ reverseTaps phone ch
+
+    uniqueSymbols :: [(Digit, Presses)] -> [Digit]
+    uniqueSymbols xs = go xs []
+        where
+            go [] acc = acc
+            go ((d, p):xs) acc =
+                if(d `elem` acc)
+                then go xs acc
+                else go xs (d:acc)
+
+    pressesForEachSymbol :: [Digit] -> [(Digit, Presses)] -> [(Digit, Occurrences, Presses)]
+    pressesForEachSymbol digits digitsToPresses = map (reduceForEachSymbol digitsToPresses) digits
+
+    reduceForEachSymbol :: [(Digit, Presses)] -> Digit -> (Digit, Occurrences, Presses)
+    reduceForEachSymbol xs ch = foldr (\(d,p) acc@(acc_d, acc_occ, acc_p) ->
+            if(d == ch)
+             then (acc_d, acc_occ + 1, acc_p + p)
+              else acc) (ch, 0, 0) xs
 
 
 
