@@ -79,8 +79,15 @@ module PhoneSimulator where
                 symbolsWithOccurences = pressesForEachSymbol usymbols digitsToPresses
                 sortedList = sortOccurrenceList symbolsWithOccurences
 
-    sortOccurrenceList :: [(Digit, Occurrences, Presses)] -> [(Digit, Occurrences, Presses)]
-    sortOccurrenceList = sortBy (\(d1, occ1, _) (d2, occ2, _) -> (flip compare) occ1 occ2)
+    sortOccurrences :: [(Digit, Occurrences, Presses)] -> [(Digit, Occurrences, Presses)]
+    sortOccurrences = sortBy (\(d1, occ1, _) (d2, occ2, _) -> (flip compare) occ1 occ2)
+
+    coolestLtr :: [String] -> Char
+    coolestLtr words = head $ filteredList
+        where
+            digitsToPresses = concat $ [map (f phone) word | word <- words]
+            sortedList = sortOccurrences $ pressesForEachSymbol (uniqueSymbols digitsToPresses) digitsToPresses
+            filteredList = map (\(letter, _, _) -> letter) $ filter (\(d, _ , _) -> d /= ' ') sortedList
 
     f :: DaPhone -> Char -> (Digit, Presses)
     f phone ch = (ch, presses)
