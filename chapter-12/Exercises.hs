@@ -25,7 +25,7 @@ module Exercises where
     countTheBeforeVowel s = countTheBeforeVowel' (words s) False 0
 
     countTheBeforeVowel' :: [String] -> Bool -> Integer -> Integer
-    countTheBeforeVowel' [] isPrefix count = count
+    countTheBeforeVowel' [] _ count = count
     countTheBeforeVowel' (x:xs) isPrefix count = countTheBeforeVowel' xs thePrefix r
         where
             thePrefix =
@@ -38,5 +38,17 @@ module Exercises where
                             then (count + 1)
                             else count
                     Nothing -> count
+
+
+    countVowels :: String -> Integer
+    countVowels xs = go xs 0
+        where
+            go [] acc = acc
+            go (x:xs) acc = go xs count
+                where count =
+                        if(x `elem` "aeiou")
+                            then (acc + 1)
+                            else acc
+
 
 
