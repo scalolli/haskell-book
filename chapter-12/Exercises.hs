@@ -51,4 +51,13 @@ module Exercises where
                             else acc
 
 
+    newtype Word' = Word' String deriving (Eq, Show)
+    vowels = "aeiou"
+
+    mkWord :: String -> Maybe Word'
+    mkWord w = if(vowelCount > consCount) then Nothing else Just (Word' w)
+        where
+            (vowelCount, consCount) = foldr (\x (vc, cc) -> if(x `elem` vowels) then (vc+1, cc) else (vc, cc+1)) (0,0) w
+
+
 
