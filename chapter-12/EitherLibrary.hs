@@ -20,3 +20,10 @@ module EitherLibrary where
             go (Right b) (ls, rs) = (ls, b:rs)
 
 
+    either' :: (a -> c) -> (b -> c) -> Either a b -> c
+    either' fa _ (Left a) = fa a
+    either' _ fb (Right b) = fb b
+
+    eitherMaybe' :: (b -> c) -> Either a b -> Maybe c
+    eitherMaybe' _ (Left _) = Nothing
+--     eitherMaybe' f e@(Right _) = Just (either' id f e)
