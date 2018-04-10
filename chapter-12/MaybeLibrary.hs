@@ -28,5 +28,16 @@ module MaybeLibrary where
     maybeToList Nothing = []
     maybeToList (Just a) = [a]
 
+    catMaybes :: [Maybe a] -> [a]
+    catMaybes [] = []
+    catMaybes ((Just a):xs) = a:(catMaybes xs)
+    catMaybes ((Nothing):xs) = catMaybes xs
+
+    flipMaybe :: [Maybe a] -> Maybe [a]
+    flipMaybe xs = go xs []
+        where
+            go [] acc = Just acc
+            go ((Just a):ys) acc = go ys (a:acc)
+            go ((Nothing):ys) _ = Nothing
 
 
