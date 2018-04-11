@@ -26,4 +26,4 @@ module EitherLibrary where
 
     eitherMaybe' :: (b -> c) -> Either a b -> Maybe c
     eitherMaybe' _ (Left _) = Nothing
---     eitherMaybe' f e@(Right _) = Just (either' id f e)
+    eitherMaybe' f e@(Right b) = Just (either' (\x -> f b) f e)
