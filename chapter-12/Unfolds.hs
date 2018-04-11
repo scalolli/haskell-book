@@ -1,3 +1,5 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module Unfolds where
 
     myIterate :: (a -> a) -> a -> [a]
@@ -12,14 +14,5 @@ module Unfolds where
                 Just(x, y) -> x:(myUnfoldr f y)
                 Nothing -> []
 
---     myIterate' :: (a -> a) -> a -> (a -> Maybe (a, a))
---     myIterate' f b = g
---         where g :: (a -> Maybe (a, a))
---               g = \a -> Just (a, (f a))
-
-
-    f :: (a -> a) -> (a -> Maybe (a, a))
-    f  h = g
-        where g :: (a -> Maybe (a, a))
-              g = (\x -> Just (x, h x))
-
+    myIterate' :: (a -> a) -> a -> [a]
+    myIterate' f b = myUnfoldr (\x -> Just (x, (f x))) b
