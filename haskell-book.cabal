@@ -29,7 +29,9 @@ library
       base >=4.7 && <5
       , QuickCheck
   exposed-modules:
-      Chapter8.WordNumber
+        Chapter8.WordNumber
+      , Chapter14.QuickCheckExercises
+
   default-language: Haskell2010
 
 
