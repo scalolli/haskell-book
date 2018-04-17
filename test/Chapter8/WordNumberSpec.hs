@@ -2,9 +2,13 @@ module Chapter8.WordNumberSpec where
 
   import Chapter8.WordNumber
   import Test.Hspec
+  import Test.QuickCheck
 
   main :: IO ()
   main = hspec spec
+
+  half x = x / 2
+  halfIdentity = (*2) . half
 
   spec :: Spec
   spec = do
@@ -28,4 +32,8 @@ module Chapter8.WordNumberSpec where
 
       it "nine-zero-zero-one for 9001" $ do
         wordNumber 9001 `shouldBe` "nine-zero-zero-one"
+
+    describe "quick check example" $ do
+      it "x/2 should be always half" $ do
+        property $ \x -> x + 1 > (x :: Int)
 
