@@ -34,6 +34,14 @@ module Chapter14.QuickCheckExercisesSpec where
           (forAll (arbitrary :: Gen (Int, Int, Int))
            (\(x, y, z) -> property_plusAssociative x y z))
 
+    describe "plus commutative" $ do
+      it "should hold for Gen Int" $ do
+        property (forAll (arbitrary :: Gen (Int, Int)) (\(x, y) -> property_plusCommutative x y))
+
+    describe "multiplication associative" $ do
+      it "should hold for Gen Int" $ do
+        property (forAll (arbitrary :: Gen (Int, Int, Int)) (\(x, y, z) -> property_multAssociative x y z))
+
 
   half :: Fractional a => a -> a
   half x = x / 2
@@ -43,6 +51,12 @@ module Chapter14.QuickCheckExercisesSpec where
 
   property_plusAssociative :: (Eq a, Num a) => a -> a -> a -> Bool
   property_plusAssociative x y z = ((x + (y + z)) == ((x + y) + z))
+
+  property_plusCommutative :: (Eq a, Num a) => a -> a -> Bool
+  property_plusCommutative x y = ((x + y) == (y + x))
+
+  property_multAssociative :: (Eq a, Num a) => a -> a -> a -> Bool
+  property_multAssociative x y z = ((x * (y * z)) == ((x * y) * z))
 
 
   listOrdered :: (Ord a) => [a] -> Bool
