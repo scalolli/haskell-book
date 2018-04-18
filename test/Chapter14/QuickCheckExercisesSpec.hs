@@ -65,6 +65,13 @@ module Chapter14.QuickCheckExercisesSpec where
       it "should check if reversing a string twice returns the same string" $ do
         property property_reverse
 
+    describe "function application" $ do
+      it "f $ a == f a" $ do
+        property (\x -> (id $ x) == id (x :: Int))
+
+      it "function composition" $ do
+        property property_functionComposition
+
 
   half :: Fractional a => a -> a
   half x = x / 2
@@ -107,6 +114,9 @@ module Chapter14.QuickCheckExercisesSpec where
 
   property_reverse :: String -> Bool
   property_reverse xs = (reverse . reverse) xs == id xs
+
+  property_functionComposition :: Int -> Bool
+  property_functionComposition x = ((id . id) x) == (id (id x))
 
   listOrdered :: (Ord a) => [a] -> Bool
   listOrdered xs = snd $ foldr go (Nothing, True) xs
