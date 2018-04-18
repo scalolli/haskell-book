@@ -4,9 +4,6 @@ module Chapter8.WordNumberSpec where
   import Test.Hspec
   import Test.QuickCheck
 
-  main :: IO ()
-  main = hspec spec
-
   half x = x / 2
   halfIdentity = (*2) . half
 
