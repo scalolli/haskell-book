@@ -44,7 +44,22 @@ module Chapter14.QuickCheckExercisesSpec where
 
     describe "multiplication commutative" $ do
       it "should hold for Gen Int" $ do
-        property (forAll (arbitrary :: Gen (Int, Int)) (\(x, y) -> property_multCommutative x y))
+        property $ forAll (arbitrary :: Gen (Int, Int)) (\(x, y) -> property_multCommutative x y)
+
+
+    describe "quotient remainder" $ do
+      it "should hold for quotient and remainder" $ do
+        property $ forAll tupleGenForDivision (\(x, y) -> property_qoutRemainder x y)
+
+    describe "validate properties for functions" $ do
+      it "should hold for division and mod" $ do
+        property $ forAll tupleGenForDivision (\(x, y) -> property_divMod x y)
+
+      it "should check associative property for power function (^)" $ do
+        property $ forAll threeTupleGenForPower (\(x, y, z) -> property_powAssociative x y z)
+
+      it "should check commutative property for power function (^)" $ do
+        property $ forAll twoTupleGenForPower (\(x, y) -> property_powCommutative x y)
 
 
   half :: Fractional a => a -> a
@@ -65,6 +80,26 @@ module Chapter14.QuickCheckExercisesSpec where
   property_multCommutative :: (Eq a, Num a) => a -> a -> Bool
   property_multCommutative x y = ((x * y) == (y * x))
 
+  property_qoutRemainder :: Integral a => a -> a -> Bool
+  property_qoutRemainder x y = (((quot x y)*y + (rem x y)) == x)
+
+  property_divMod :: Integral a => a -> a -> Bool
+  property_divMod x y = ((div x y)*y + (mod x y)) == x
+
+  property_powAssociative :: Integral a => a -> a -> a -> Bool
+  property_powAssociative x y z = ((x ^ y) ^ z) == (x ^ (y ^ z))
+
+  property_powCommutative :: Integral a => a -> a -> Bool
+  property_powCommutative x y = (x ^ y) == (y ^ x)
+
+  tupleGenForDivision :: Gen (Int, Int)
+  tupleGenForDivision = suchThat (arbitrary :: Gen (Int, Int)) (\(x, y) -> y /= 0)
+
+  threeTupleGenForPower :: Gen (Int, Int, Int)
+  threeTupleGenForPower = suchThat (arbitrary :: Gen (Int, Int, Int)) (\(x, y, z) -> x /= 0 && y /= 0 && z /= 0)
+
+  twoTupleGenForPower :: Gen (Int, Int)
+  twoTupleGenForPower = suchThat (arbitrary :: Gen (Int, Int)) (\(x, y) -> x /= 0 && y /= 0)
 
   listOrdered :: (Ord a) => [a] -> Bool
   listOrdered xs = snd $ foldr go (Nothing, True) xs
