@@ -33,13 +33,11 @@ module Chapter14.QuickCheckExercisesSpec where
 
     describe "plusAssociative" $ do
       it "should hold for Gen Int" $ do
-        property
-          (forAll (arbitrary :: Gen (Int, Int, Int))
-           (\(x, y, z) -> property_plusAssociative x y z))
+        property property_plusAssociative
 
     describe "plus commutative" $ do
       it "should hold for Gen Int" $ do
-        property (forAll (arbitrary :: Gen (Int, Int)) (\(x, y) -> property_plusCommutative x y))
+        property property_plusCommutative
 
     describe "multiplication associative" $ do
       it "should hold for Gen Int" $ do
@@ -65,7 +63,7 @@ module Chapter14.QuickCheckExercisesSpec where
 --         property $ forAll twoTupleGenForPower (\(x, y) -> property_powCommutative x y)
 
       it "should check if reversing a string twice returns the same string" $ do
-        property $ forAll (arbitrary :: Gen String) property_reverse
+        property property_reverse
 
 
   half :: Fractional a => a -> a
@@ -74,10 +72,10 @@ module Chapter14.QuickCheckExercisesSpec where
   halfIdentity :: Fractional a => a -> a
   halfIdentity = (*2) . half
 
-  property_plusAssociative :: (Eq a, Num a) => a -> a -> a -> Bool
+  property_plusAssociative :: Int -> Int -> Int -> Bool
   property_plusAssociative x y z = ((x + (y + z)) == ((x + y) + z))
 
-  property_plusCommutative :: (Eq a, Num a) => a -> a -> Bool
+  property_plusCommutative :: Int -> Int -> Bool
   property_plusCommutative x y = ((x + y) == (y + x))
 
   property_multAssociative :: (Eq a, Num a) => a -> a -> a -> Bool
