@@ -4,6 +4,9 @@ module Chapter14.QuickCheckExercisesSpec where
   import Test.Hspec
   import Data.List (sort)
 
+  quickCheckUsingHspec :: IO ()
+  quickCheckUsingHspec = hspec spec
+
   spec :: Spec
   spec = do
     describe "halfIdentity" $ do
@@ -55,11 +58,14 @@ module Chapter14.QuickCheckExercisesSpec where
       it "should hold for division and mod" $ do
         property $ forAll tupleGenForDivision (\(x, y) -> property_divMod x y)
 
-      it "should check associative property for power function (^)" $ do
-        property $ forAll threeTupleGenForPower (\(x, y, z) -> property_powAssociative x y z)
+--       it "should check associative property for power function (^)" $ do
+--         property $ forAll threeTupleGenForPower (\(x, y, z) -> property_powAssociative x y z)
+--
+--       it "should check commutative property for power function (^)" $ do
+--         property $ forAll twoTupleGenForPower (\(x, y) -> property_powCommutative x y)
 
-      it "should check commutative property for power function (^)" $ do
-        property $ forAll twoTupleGenForPower (\(x, y) -> property_powCommutative x y)
+      it "should check if reversing a string twice returns the same string" $ do
+        property $ forAll (arbitrary :: Gen String) property_reverse
 
 
   half :: Fractional a => a -> a
@@ -101,11 +107,11 @@ module Chapter14.QuickCheckExercisesSpec where
   twoTupleGenForPower :: Gen (Int, Int)
   twoTupleGenForPower = suchThat (arbitrary :: Gen (Int, Int)) (\(x, y) -> x /= 0 && y /= 0)
 
+  property_reverse :: String -> Bool
+  property_reverse xs = (reverse . reverse) xs == id xs
+
   listOrdered :: (Ord a) => [a] -> Bool
   listOrdered xs = snd $ foldr go (Nothing, True) xs
          where go _ status@(_, False) = status
                go y (Nothing, t) = (Just y, t)
                go y (Just x, t) = (Just y, x >= y)
-
-
-
