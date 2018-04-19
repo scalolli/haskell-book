@@ -1,6 +1,8 @@
 module Chapter14.QuickCheckWithoutHspec where
 
   import Test.QuickCheck
+  import Data.List
+  import Data.Char
 
   main :: IO ()
   main = do
@@ -8,7 +10,9 @@ module Chapter14.QuickCheckWithoutHspec where
     quickCheck property_foldrConcat
 --     quickCheck property_take
     quickCheck property_readShowAndBack
-    quickCheck property_square
+--     quickCheck property_square
+    quickCheck property_idempotenceForCapitalizeWord
+    quickCheck property_idempotenceForSorting
 
 
   property_foldr :: [Int] -> Bool
@@ -32,5 +36,22 @@ module Chapter14.QuickCheckWithoutHspec where
   property_square :: Float -> Bool
   property_square x = (squareIdentity x) == x
 
+
+  twice :: (a -> a) -> (a -> a)
+  twice f = f . f
+
+  fourTimes :: (a -> a) -> (a -> a)
+  fourTimes = twice . twice
+
+  property_idempotenceForCapitalizeWord :: [Char] -> Bool
+  property_idempotenceForCapitalizeWord x =
+            (capitalizeWord x == twice capitalizeWord x) &&
+                                           (capitalizeWord x == fourTimes capitalizeWord x)
+
+  property_idempotenceForSorting :: [Int] -> Bool
+  property_idempotenceForSorting x = (sort x == twice sort x) && (sort x == fourTimes sort x)
+
+  capitalizeWord :: [Char] -> [Char]
+  capitalizeWord xs = fmap toUpper xs
 
 
