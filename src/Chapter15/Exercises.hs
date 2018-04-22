@@ -1,10 +1,7 @@
 module Chapter15.Exercises where
 
   import Test.QuickCheck
-
-  class Semigroup a where
-    (<>) :: a -> a -> a
-
+  import Data.Semigroup
 
 -- Semigroup for Trivial
 
@@ -29,9 +26,6 @@ module Chapter15.Exercises where
 
   instance Semigroup a => Semigroup (Identity a) where
       (Identity x) <> (Identity y) = Identity (x <> y)
-
-  instance Semigroup [a] where
-      (a) <> (b) = a ++ b
 
   instance Arbitrary a => Arbitrary (Identity a) where
     arbitrary = do
@@ -142,6 +136,39 @@ module Chapter15.Exercises where
 
   type OrAssoc = (Or String Int) -> (Or String Int) -> (Or String Int) -> Bool
 
+-- Semigroup for Combine
+
+  newtype Combine a b = Combine {unCombine :: a -> b}
+
+  instance Show (Combine a b) where
+    show (Combine _) = "nothing useful"
+
+  instance Semigroup b => Semigroup (Combine a b) where
+    x <> y = Combine {unCombine = (\c -> ((unCombine x) c) <> ((unCombine y) c))}
+
+  e :: Combine Int (Sum Int)
+  e = Combine $ (\n -> Sum (n + 1))
+
+  f :: Combine Int (Sum Int)
+  f = Combine $ (\n -> Sum (n + 1))
+
+  g :: Combine Int (Sum Int)
+  g = Combine $ \n -> Sum (n - 1)
+
+  h = (unCombine (e <> f <> g)) 1
+
+  combineArbitrary = do
+          w <- (arbitrary :: Gen Int)
+          x <- (arbitrary :: Gen (Int -> Int))
+          y <- (arbitrary :: Gen (Int -> Int))
+          z <- (arbitrary :: Gen (Int -> Int))
+          return (w, Combine x, Combine y , Combine z)
+
+  type S = Combine Int Int
+
+  combineAssoc :: (Int, S, S, S) -> Bool
+  combineAssoc (w, x, y, z) = ((unCombine (x <> (y <> z))) w) == ((unCombine ((x <> y) <> z)) w)
+
   chapter15Exercises :: IO ()
   chapter15Exercises = do
     quickCheck (semiGroupAssoc :: TrivialAssoc)
@@ -152,8 +179,6 @@ module Chapter15.Exercises where
     quickCheck (semiGroupAssoc :: BoolConjAssoc)
     quickCheck (semiGroupAssoc :: BoolDisjAssoc)
     quickCheck (semiGroupAssoc :: OrAssoc)
-
-
-
+    quickCheck $ forAll combineArbitrary combineAssoc
 
 
