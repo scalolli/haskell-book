@@ -21,7 +21,6 @@ executable haskell-testing
                        , hspec
                        , QuickCheck
 
-
 library
   hs-source-dirs:
       src
@@ -31,6 +30,7 @@ library
   exposed-modules:
         Chapter8.WordNumber
       , Chapter14.QuickCheckExercises
+      , Chapter15.Intermissions
       , Chapter9.Cipher
 
   default-language: Haskell2010
