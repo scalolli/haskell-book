@@ -16,8 +16,8 @@ module Chapter9.Cipher where
   decode :: [Char] -> [Char]
   decode xs = map lshift xs
 
-  main :: IO ()
-  main = do
+  runCipher :: IO ()
+  runCipher = do
     putStrLn "Enter word to encode: "
     word <- getLine
     putStrLn $ "Ceaser cipher is: " ++ encode word
