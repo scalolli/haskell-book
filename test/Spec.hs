@@ -7,6 +7,7 @@ module Spec where
   import qualified Chapter8.WordNumberSpec
   import qualified Chapter14.QuickCheckWithoutHspec
   import Chapter9.Cipher as C
+  import Chapter11.CeaserCipher as Ceaser
 
   main :: IO ()
   main = do
@@ -28,3 +29,6 @@ module Spec where
 
   property_cipher :: Property
   property_cipher = forAll genSafeWords (\x -> (C.decode (C.encode x)) == x)
+
+--   property_CeaserCipher :: Property
+--   property_CeaserCipher = forAll genSafeWords ()

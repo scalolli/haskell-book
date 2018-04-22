@@ -1,4 +1,4 @@
-module CeaserCipher where
+module Chapter11.CeaserCipher where
 
     import Data.Char
 

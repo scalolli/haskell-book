@@ -33,6 +33,7 @@ library
       , Chapter15.Intermissions
       , Chapter15.Exercises
       , Chapter9.Cipher
+      , Chapter11.CeaserCipher
 
   default-language: Haskell2010
 
