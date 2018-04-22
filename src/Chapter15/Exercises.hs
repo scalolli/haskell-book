@@ -124,6 +124,24 @@ module Chapter15.Exercises where
   type BoolDisjAssoc = BoolDisj -> BoolDisj -> BoolDisj -> Bool
 
 
+--  Semigroup for Or
+
+  data Or a b = Fst a | Snd b deriving (Eq, Show)
+
+  instance Semigroup (Or a b) where
+    (Snd a) <> (Snd b) = Snd a
+    (Fst a) <> (Fst b) = Fst b
+    (Snd a) <> _ = Snd a
+    _ <> (Snd b) = Snd b
+
+  instance (Arbitrary a, Arbitrary b) => Arbitrary (Or a b) where
+    arbitrary = do
+      x <- arbitrary
+      y <- arbitrary
+      elements [Fst x, Snd y]
+
+  type OrAssoc = (Or String Int) -> (Or String Int) -> (Or String Int) -> Bool
+
   chapter15Exercises :: IO ()
   chapter15Exercises = do
     quickCheck (semiGroupAssoc :: TrivialAssoc)
@@ -133,6 +151,7 @@ module Chapter15.Exercises where
     quickCheck (semiGroupAssoc :: FourAssoc)
     quickCheck (semiGroupAssoc :: BoolConjAssoc)
     quickCheck (semiGroupAssoc :: BoolDisjAssoc)
+    quickCheck (semiGroupAssoc :: OrAssoc)
 
 
 
