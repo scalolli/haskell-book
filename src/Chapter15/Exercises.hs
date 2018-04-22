@@ -115,6 +115,7 @@ module Chapter15.Exercises where
     (BoolDisj True) <> (BoolDisj True) = BoolDisj True
     (BoolDisj True) <> _ = BoolDisj True
     _ <> (BoolDisj True) = BoolDisj True
+    _ <> _ = BoolDisj False
 
 
   instance Arbitrary BoolDisj where
@@ -130,6 +131,7 @@ module Chapter15.Exercises where
     quickCheck (semiGroupAssoc :: TwoAssoc)
     quickCheck (semiGroupAssoc :: ThreeAssoc)
     quickCheck (semiGroupAssoc :: FourAssoc)
+    quickCheck (semiGroupAssoc :: BoolConjAssoc)
     quickCheck (semiGroupAssoc :: BoolDisjAssoc)
 
 
