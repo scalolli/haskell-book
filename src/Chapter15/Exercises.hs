@@ -159,15 +159,39 @@ module Chapter15.Exercises where
 
   combineArbitrary = do
           w <- (arbitrary :: Gen Int)
-          x <- (arbitrary :: Gen (Int -> Int))
-          y <- (arbitrary :: Gen (Int -> Int))
-          z <- (arbitrary :: Gen (Int -> Int))
+          x <- (arbitrary :: Gen (Int -> String))
+          y <- (arbitrary :: Gen (Int -> String))
+          z <- (arbitrary :: Gen (Int -> String))
           return (w, Combine x, Combine y , Combine z)
 
-  type S = Combine Int Int
+  type S = Combine Int String
 
   combineAssoc :: (Int, S, S, S) -> Bool
   combineAssoc (w, x, y, z) = ((unCombine (x <> (y <> z))) w) == ((unCombine ((x <> y) <> z)) w)
+
+
+-- SemiGroup for Comp
+
+  newtype Comp a = Comp {unComp :: a -> a}
+
+  instance Show (Comp a) where
+    show (Comp _) = "Nothing useful"
+
+  instance Semigroup a => Semigroup (Comp a) where
+    (Comp f) <> (Comp g) = Comp {unComp = (f . g)}
+
+
+  compArbitrary = do
+          w <- (arbitrary :: Gen Int)
+          x <- (arbitrary :: Gen (Int -> Int))
+          y <- (arbitrary :: Gen (Int -> Int))
+          z <- (arbitrary :: Gen (Int -> Int))
+          return (w, Comp x, Comp y , Comp z)
+
+  type CompFn = (Comp Int)
+
+  compAssoc :: (Int, CompFn, CompFn, CompFn) -> Bool
+  compAssoc (w, x, y, z) = ((unComp (x <> (y <> z))) w) == ((unComp ((x <> y) <> z)) w)
 
   chapter15Exercises :: IO ()
   chapter15Exercises = do
@@ -180,5 +204,6 @@ module Chapter15.Exercises where
     quickCheck (semiGroupAssoc :: BoolDisjAssoc)
     quickCheck (semiGroupAssoc :: OrAssoc)
     quickCheck $ forAll combineArbitrary combineAssoc
+    quickCheck $ forAll compArbitrary compAssoc
 
 
