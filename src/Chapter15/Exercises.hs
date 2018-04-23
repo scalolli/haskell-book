@@ -71,12 +71,16 @@ module Chapter15.Exercises where
 
   type TwoAssoc = (Two String Int) -> (Two String Int) -> (Two String Int) -> Bool
 
--- Semigroup for three
+-- Semigroup and Monoid for three
 
   data Three a b c = Three a b c deriving (Eq, Show)
 
   instance (Semigroup a, Semigroup b, Semigroup c) => Semigroup (Three a b c) where
     (Three i j k) <> (Three l m n) = Three (i <> l) (j <> m) (k <> n)
+
+  instance (Semigroup a, Monoid a, Semigroup b, Monoid b, Semigroup c, Monoid c) => Monoid (Three a b c) where
+    mempty = Three (mempty) (mempty) (mempty)
+    mappend = (<>)
 
   instance (Arbitrary a, Arbitrary b, Arbitrary c) => Arbitrary (Three a b c) where
     arbitrary = do
@@ -87,12 +91,16 @@ module Chapter15.Exercises where
 
   type ThreeAssoc = (Three String Int Int) -> (Three String Int Int) -> (Three String Int Int) -> Bool
 
--- Semigroup for four
+-- Semigroup and Monoid for four
 
   data Four a b c d = Four a b c d deriving (Eq, Show)
 
   instance (Semigroup a, Semigroup b, Semigroup c, Semigroup d) => Semigroup (Four a b c d) where
     (Four h i j k) <> (Four l m n o) = Four (h <> l) (i <> m) (j <> n) (k <> o)
+
+  instance (Semigroup a, Monoid a, Semigroup b, Monoid b, Semigroup c, Monoid c, Semigroup d, Monoid d) => Monoid (Four a b c d) where
+    mempty = Four (mempty) (mempty) (mempty) (mempty)
+    mappend = (<>)
 
   instance (Arbitrary a, Arbitrary b, Arbitrary c, Arbitrary d) => Arbitrary (Four a b c d) where
     arbitrary = do
@@ -245,7 +253,13 @@ module Chapter15.Exercises where
     quickCheck (mri :: ((Two String String) -> Bool))
 
     quickCheck (semiGroupAssoc :: ThreeAssoc)
+    quickCheck (mli :: ((Three String String String) -> Bool))
+    quickCheck (mri :: ((Three String String String) -> Bool))
+
     quickCheck (semiGroupAssoc :: FourAssoc)
+    quickCheck (mli :: ((Four String String String String) -> Bool))
+    quickCheck (mri :: ((Four String String String String) -> Bool))
+
     quickCheck (semiGroupAssoc :: BoolConjAssoc)
     quickCheck (semiGroupAssoc :: BoolDisjAssoc)
     quickCheck (semiGroupAssoc :: OrAssoc)
