@@ -29,7 +29,7 @@ module Chapter15.Exercises where
   mri x = x == (x <> mempty)
 
 
--- Semigroup for Identity
+-- Semigroup and Monoid for Identity
 
   newtype Identity a = Identity a
       deriving (Eq, Show)
@@ -49,7 +49,7 @@ module Chapter15.Exercises where
 
   type IdentityAssoc = (Identity String) -> (Identity String) -> (Identity String) -> Bool
 
--- Semigroup for Two
+-- Semigroup and Monoid for Two
 
   data Two a b = Two a b deriving (Eq, Show)
 
@@ -64,6 +64,10 @@ module Chapter15.Exercises where
 
   instance Semigroup Int where
     a <> b = a + b
+
+  instance (Semigroup a, Monoid a, Semigroup b, Monoid b) => Monoid (Two a b) where
+    mempty = Two (mempty) (mempty)
+    mappend = (<>)
 
   type TwoAssoc = (Two String Int) -> (Two String Int) -> (Two String Int) -> Bool
 
@@ -237,6 +241,9 @@ module Chapter15.Exercises where
     quickCheck (mri :: ((Identity String) -> Bool))
 
     quickCheck (semiGroupAssoc :: TwoAssoc)
+    quickCheck (mli :: ((Two String String) -> Bool))
+    quickCheck (mri :: ((Two String String) -> Bool))
+
     quickCheck (semiGroupAssoc :: ThreeAssoc)
     quickCheck (semiGroupAssoc :: FourAssoc)
     quickCheck (semiGroupAssoc :: BoolConjAssoc)
