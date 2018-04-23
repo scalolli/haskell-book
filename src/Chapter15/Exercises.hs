@@ -1,14 +1,18 @@
-module Chapter15.SemigroupExercises where
+module Chapter15.Exercises where
 
   import Test.QuickCheck
   import Data.Semigroup
 
--- Semigroup for Trivial
+-- Semigroup and Monoid for Trivial
 
   data Trivial = Trivial deriving (Eq, Show)
 
   instance Semigroup Trivial where
     (<>) _ _ = Trivial
+
+  instance Monoid Trivial where
+    mempty = Trivial
+    mappend = (<>)
 
   instance Arbitrary Trivial where
     arbitrary = return Trivial
@@ -18,6 +22,12 @@ module Chapter15.SemigroupExercises where
 
   type TrivialAssoc = Trivial -> Trivial -> Trivial -> Bool
 
+  mli :: (Monoid a, Eq a, Semigroup a) => a -> Bool
+  mli x = (mempty <> x) == x
+
+  mri :: (Monoid a, Eq a, Semigroup a) => a -> Bool
+  mri x = x == (x <> mempty)
+
 
 -- Semigroup for Identity
 
@@ -26,6 +36,11 @@ module Chapter15.SemigroupExercises where
 
   instance Semigroup a => Semigroup (Identity a) where
       (Identity x) <> (Identity y) = Identity (x <> y)
+
+  instance (Semigroup a, Monoid a) => Monoid (Identity a) where
+    mempty = Identity mempty
+    mappend = (<>)
+
 
   instance Arbitrary a => Arbitrary (Identity a) where
     arbitrary = do
@@ -214,7 +229,13 @@ module Chapter15.SemigroupExercises where
   chapter15Exercises :: IO ()
   chapter15Exercises = do
     quickCheck (semiGroupAssoc :: TrivialAssoc)
+    quickCheck (mli :: Trivial -> Bool)
+    quickCheck (mri :: Trivial -> Bool)
+
     quickCheck (semiGroupAssoc :: IdentityAssoc)
+    quickCheck (mli :: ((Identity String) -> Bool))
+    quickCheck (mri :: ((Identity String) -> Bool))
+
     quickCheck (semiGroupAssoc :: TwoAssoc)
     quickCheck (semiGroupAssoc :: ThreeAssoc)
     quickCheck (semiGroupAssoc :: FourAssoc)
