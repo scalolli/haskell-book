@@ -31,7 +31,7 @@ library
         Chapter8.WordNumber
       , Chapter14.QuickCheckExercises
       , Chapter15.Intermissions
-      , Chapter15.Exercises
+      , Chapter15.SemigroupExercises
       , Chapter9.Cipher
       , Chapter11.CeaserCipher
 

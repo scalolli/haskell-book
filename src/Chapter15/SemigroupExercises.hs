@@ -1,4 +1,4 @@
-module Chapter15.Exercises where
+module Chapter15.SemigroupExercises where
 
   import Test.QuickCheck
   import Data.Semigroup
