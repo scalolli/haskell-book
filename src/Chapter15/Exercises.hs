@@ -122,6 +122,10 @@ module Chapter15.Exercises where
     (BoolConj False) <> _ = BoolConj False
     _ <> (BoolConj False) = BoolConj False
 
+  instance Monoid BoolConj where
+    mempty = BoolConj True
+    mappend = (<>)
+
   instance Arbitrary BoolConj where
     arbitrary = elements [BoolConj True, BoolConj False]
 
@@ -137,6 +141,10 @@ module Chapter15.Exercises where
     (BoolDisj True) <> _ = BoolDisj True
     _ <> (BoolDisj True) = BoolDisj True
     _ <> _ = BoolDisj False
+
+  instance Monoid BoolDisj where
+    mempty = BoolDisj False
+    mappend = (<>)
 
 
   instance Arbitrary BoolDisj where
@@ -173,6 +181,10 @@ module Chapter15.Exercises where
   instance Semigroup b => Semigroup (Combine a b) where
     x <> y = Combine {unCombine = (\c -> ((unCombine x) c) <> ((unCombine y) c))}
 
+  instance (Semigroup b, Monoid b) => Monoid (Combine a b) where
+    mempty = Combine {unCombine = (\a -> mempty)}
+    mappend = (<>)
+
   e :: Combine Int (Sum Int)
   e = Combine $ (\n -> Sum (n + 1))
 
@@ -195,6 +207,18 @@ module Chapter15.Exercises where
 
   combineAssoc :: (Int, S, S, S) -> Bool
   combineAssoc (w, x, y, z) = ((unCombine (x <> (y <> z))) w) == ((unCombine ((x <> y) <> z)) w)
+
+  combineFnArbitrary :: Gen (Int, (Combine Int String))
+  combineFnArbitrary = do
+    a <- arbitrary :: Gen Int
+    f <- (arbitrary :: Gen (Int -> String))
+    return (a, Combine f)
+
+  combineMli :: (Int, Combine Int String) -> Bool
+  combineMli (a, x) = ((unCombine (mempty <> x)) a) == ((unCombine x) a)
+
+  combineMri :: (Int, Combine Int String) -> Bool
+  combineMri (a, x) = ((unCombine (x <> mempty)) a) == ((unCombine x) a)
 
 
 -- SemiGroup for Comp
@@ -261,9 +285,19 @@ module Chapter15.Exercises where
     quickCheck (mri :: ((Four String String String String) -> Bool))
 
     quickCheck (semiGroupAssoc :: BoolConjAssoc)
+    quickCheck (mli :: ((BoolConj) -> Bool))
+    quickCheck (mri :: ((BoolConj) -> Bool))
+
     quickCheck (semiGroupAssoc :: BoolDisjAssoc)
+    quickCheck (mli :: ((BoolDisj) -> Bool))
+    quickCheck (mri :: ((BoolDisj) -> Bool))
+
+
     quickCheck (semiGroupAssoc :: OrAssoc)
     quickCheck $ forAll combineArbitrary combineAssoc
+    quickCheck $ forAll combineFnArbitrary combineMli
+    quickCheck $ forAll combineFnArbitrary combineMri
+
     quickCheck $ forAll compArbitrary compAssoc
     print $ success 1 <> failure "blah"
     print $ failure "woot" <> failure "blah"
