@@ -193,6 +193,24 @@ module Chapter15.Exercises where
   compAssoc :: (Int, CompFn, CompFn, CompFn) -> Bool
   compAssoc (w, x, y, z) = ((unComp (x <> (y <> z))) w) == ((unComp ((x <> y) <> z)) w)
 
+--  Semigroup for Validation
+
+  data Validation a b =
+    Failure' a | Success' b
+    deriving (Eq, Show)
+
+  instance Semigroup a => Semigroup (Validation a b) where
+    (Failure' x) <> (Failure' y) = Failure' (x <> y)
+    (Success' x) <> (Success' y) = Success' x
+    (Success' x) <> (Failure' y) = Success' x
+    (Failure' x) <> (Success' y) = Success' y
+
+  failure :: String -> Validation String Int
+  failure = Failure'
+
+  success :: Int -> Validation String Int
+  success = Success'
+
   chapter15Exercises :: IO ()
   chapter15Exercises = do
     quickCheck (semiGroupAssoc :: TrivialAssoc)
@@ -205,5 +223,9 @@ module Chapter15.Exercises where
     quickCheck (semiGroupAssoc :: OrAssoc)
     quickCheck $ forAll combineArbitrary combineAssoc
     quickCheck $ forAll compArbitrary compAssoc
+    print $ success 1 <> failure "blah"
+    print $ failure "woot" <> failure "blah"
+    print $ success 1 <> success 2
+    print $ failure "woot" <> success 2
 
 
