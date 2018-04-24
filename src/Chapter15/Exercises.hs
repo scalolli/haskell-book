@@ -266,6 +266,50 @@ module Chapter15.Exercises where
   success :: Int -> Validation String Int
   success = Success'
 
+--   Monoid for Mem
+
+  newtype Mem s a =
+    Mem {
+      runMem :: s -> (a, s)
+    }
+
+  instance Show (Mem s a) where
+    show _ = "Place holder"
+
+  resultantFn :: Semigroup a => (b -> (a, b)) -> (b -> (a, b)) -> b -> (a, b)
+  resultantFn f g b = (a1 <> a2, b2)
+        where
+            (a1, b1) = g b
+            (a2, b2) = f b1
+
+  instance Semigroup a => Semigroup (Mem s a) where
+    Mem f <> Mem g = Mem {runMem = (resultantFn f g)}
+
+  instance (Monoid a, Semigroup a) => Monoid (Mem s a) where
+    mempty = Mem $ \s -> (mempty, s)
+    mappend = (<>)
+
+  arbitraryMemForIdentity :: Gen (Int, Mem Int String)
+  arbitraryMemForIdentity = do
+    x <- (arbitrary :: Gen Int)
+    f <- (arbitrary :: Gen (Int -> (String, Int)))
+    return (x, Mem f)
+
+  arbitraryMemForAssoc :: Gen (Int, Mem Int String, Mem Int String)
+  arbitraryMemForAssoc = do
+    x <- (arbitrary :: Gen Int)
+    f <- (arbitrary :: Gen (Int -> (String, Int)))
+    g <- (arbitrary :: Gen (Int -> (String, Int)))
+    return (x, Mem f, Mem g)
+
+  memRi :: (Int, (Mem Int String)) -> Bool
+  memRi (b, m@(Mem f)) = (runMem (m <> mempty) b) == (runMem m b)
+
+  memLi :: (Int, (Mem Int String)) -> Bool
+  memLi (b, m@(Mem f)) = (runMem (mempty <> m) b) == (runMem m b)
+
+  f' = Mem $ \s -> ("hi", s + 1)
+
   chapter15Exercises :: IO ()
   chapter15Exercises = do
     quickCheck (semiGroupAssoc :: TrivialAssoc)
@@ -307,5 +351,17 @@ module Chapter15.Exercises where
     print $ failure "woot" <> failure "blah"
     print $ success 1 <> success 2
     print $ failure "woot" <> success 2
+
+    let rmzero = runMem mempty 0
+        rmleft = runMem (f' <> mempty) 0
+        rmright = runMem (mempty <> f') 0
+    print $ rmleft
+    print $ rmright
+    print $ (rmzero :: (String, Int))
+    print $ rmleft == runMem f' 0
+    print $ rmright == runMem f' 0
+
+    quickCheck $ forAll arbitraryMemForIdentity memLi
+    quickCheck $ forAll arbitraryMemForIdentity memRi
 
 
