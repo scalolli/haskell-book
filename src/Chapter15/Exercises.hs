@@ -231,6 +231,10 @@ module Chapter15.Exercises where
   instance Semigroup a => Semigroup (Comp a) where
     (Comp f) <> (Comp g) = Comp {unComp = (f . g)}
 
+  instance Semigroup a => Monoid (Comp a) where
+    mempty = Comp id
+    mappend = (<>)
+
 
   compArbitrary = do
           w <- (arbitrary :: Gen Int)
