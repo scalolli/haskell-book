@@ -110,6 +110,47 @@ module Chapter16.Intermission where
   fComposeForThree x (Fun _ f) (Fun _ g) = functorCompose f g x
 
 
+-- Functor instance for Three'
+
+  data Three' a b = Three' a b b deriving (Eq, Show)
+
+  instance Functor (Three' a) where
+    fmap f (Three' a b c) = Three' a (f b) (f c)
+
+  instance (Arbitrary a, Arbitrary b) => Arbitrary (Three' a b) where
+    arbitrary = do
+      a <- arbitrary
+      b <- arbitrary
+      c <- arbitrary
+      return (Three' a b c)
+
+  functorIdentityForThree' :: (Three' Int Int) -> Bool
+  functorIdentityForThree' x = functorIdentity x
+
+  fComposeForThree' :: (Three' Int Int) -> IntInt -> IntInt -> Bool
+  fComposeForThree' x (Fun _ f) (Fun _ g) = functorCompose f g x
+
+-- Functor instance for Four
+
+  data Four a b c d = Four a b c d deriving (Eq, Show)
+
+  instance Functor (Four a b c) where
+    fmap f (Four a b c d) = Four a b c (f d)
+
+  instance (Arbitrary a, Arbitrary b, Arbitrary c, Arbitrary d) => Arbitrary (Four a b c d) where
+    arbitrary = do
+      a <- arbitrary
+      b <- arbitrary
+      c <- arbitrary
+      d <- arbitrary
+      return (Four a b c d)
+
+  functorIdentityForFour :: (Four Int Int Int Int) -> Bool
+  functorIdentityForFour x = functorIdentity x
+
+  fComposeForFour :: (Four Int Int Int Int) -> IntInt -> IntInt -> Bool
+  fComposeForFour x (Fun _ f) (Fun _ g) = functorCompose f g x
+
   chapter16Intermission :: IO ()
   chapter16Intermission = do
     quickCheck f
@@ -127,4 +168,10 @@ module Chapter16.Intermission where
 
     quickCheck functorIdentityForThree
     quickCheck fComposeForThree
+
+    quickCheck functorIdentityForThree'
+    quickCheck fComposeForThree'
+
+    quickCheck functorIdentityForFour
+    quickCheck fComposeForFour
 
