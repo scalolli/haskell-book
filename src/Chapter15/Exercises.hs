@@ -295,12 +295,16 @@ module Chapter15.Exercises where
     f <- (arbitrary :: Gen (Int -> (String, Int)))
     return (x, Mem f)
 
-  arbitraryMemForAssoc :: Gen (Int, Mem Int String, Mem Int String)
+  arbitraryMemForAssoc :: Gen (Int, Mem Int String, Mem Int String, Mem Int String)
   arbitraryMemForAssoc = do
     x <- (arbitrary :: Gen Int)
     f <- (arbitrary :: Gen (Int -> (String, Int)))
     g <- (arbitrary :: Gen (Int -> (String, Int)))
-    return (x, Mem f, Mem g)
+    h <- (arbitrary :: Gen (Int -> (String, Int)))
+    return (x, Mem f, Mem g, Mem h)
+
+  memAssoc :: (Int, Mem Int String, Mem Int String, Mem Int String) -> Bool
+  memAssoc (b, m1@(Mem f), m2@(Mem g), m3@(Mem h)) = (runMem (m1 <> (m2 <> m3)) b) == (runMem ((m1 <> m2) <> m3) b)
 
   memRi :: (Int, (Mem Int String)) -> Bool
   memRi (b, m@(Mem f)) = (runMem (m <> mempty) b) == (runMem m b)
@@ -363,5 +367,6 @@ module Chapter15.Exercises where
 
     quickCheck $ forAll arbitraryMemForIdentity memLi
     quickCheck $ forAll arbitraryMemForIdentity memRi
+    quickCheck $ forAll arbitraryMemForAssoc memAssoc
 
 
