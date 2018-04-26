@@ -89,6 +89,27 @@ module Chapter16.Intermission where
   fComposeForTwo :: (Two Int Int) -> IntInt -> IntInt -> Bool
   fComposeForTwo x (Fun _ f) (Fun _ g) = functorCompose f g x
 
+-- Functor for Three
+
+  data Three a b c = Three a b c deriving (Eq, Show)
+
+  instance Functor (Three a b) where
+    fmap f (Three a b c) = Three a b (f c)
+
+  instance (Arbitrary a, Arbitrary b, Arbitrary c) => Arbitrary (Three a b c) where
+    arbitrary = do
+      a <- arbitrary
+      b <- arbitrary
+      c <- arbitrary
+      return (Three a b c)
+
+  functorIdentityForThree :: (Three Int Int Int) -> Bool
+  functorIdentityForThree x = functorIdentity x
+
+  fComposeForThree :: (Three Int Int Int) -> IntInt -> IntInt -> Bool
+  fComposeForThree x (Fun _ f) (Fun _ g) = functorCompose f g x
+
+
   chapter16Intermission :: IO ()
   chapter16Intermission = do
     quickCheck f
@@ -104,4 +125,6 @@ module Chapter16.Intermission where
     quickCheck functorIdentityForTwo
     quickCheck fComposeForTwo
 
+    quickCheck functorIdentityForThree
+    quickCheck fComposeForThree
 
