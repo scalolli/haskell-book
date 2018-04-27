@@ -48,3 +48,14 @@ module Chapter16.Exercises where
   instance Functor (Flip Tuple a) where
     fmap f (Flip (Tuple a b)) = Flip $ Tuple (f a) b
 
+
+  data EvilGoateeConst a b = GoatyConst b deriving (Eq, Show)
+
+  instance Functor (EvilGoateeConst a) where
+    fmap f (GoatyConst b) = GoatyConst (f b)
+
+  data LiftItOut f a = LiftItOut (f a) deriving (Eq, Show)
+
+  instance Functor f => Functor (LiftItOut f) where
+    fmap f (LiftItOut (fa)) = LiftItOut (fmap f fa)
+
