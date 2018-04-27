@@ -2,6 +2,9 @@
 
 module Chapter16.Exercises where
 
+  import Test.QuickCheck
+  import Test.QuickCheck.Function
+
   data Sum a b = First a | Second b deriving (Eq, Show)
 
   instance Functor (Sum e) where
@@ -23,6 +26,15 @@ module Chapter16.Exercises where
     fmap f (R a b a') = R a (f b) a'
 
 
+  functorIdentity :: (Functor f, (Eq (f a))) => f a -> Bool
+  functorIdentity f =
+        fmap id f == id f
+
+  functorCompose :: (Functor f, (Eq (f c))) => (b -> c) -> (a -> b) -> f a -> Bool
+  functorCompose f g x = ((fmap f . fmap g) x) == (fmap (f . g) x)
+
+-- Functor instance for Quant
+
   data Quant a b = Finance | Desk a | Bloor b
     deriving (Eq, Show)
 
@@ -31,11 +43,31 @@ module Chapter16.Exercises where
     fmap f (Desk a) = Desk a
     fmap f (Bloor b) = Bloor (f b)
 
+  instance (Arbitrary a, Arbitrary b) => Arbitrary (Quant a b) where
+    arbitrary = do
+      x <- arbitrary
+      y <- arbitrary
+      elements [Finance, Desk x, Bloor y]
+
+  type IntInt = Fun Int Int
+
+  functorComposeForQuant :: IntInt -> IntInt -> Quant Int Int -> Bool
+  functorComposeForQuant (Fun _ f) (Fun _ g) c = functorCompose f g c
+
+-- Functor instance for K
 
   data K a b = K a deriving (Eq, Show)
 
   instance Functor (K a) where
     fmap _ (K a) = K a
+
+  instance Arbitrary a => Arbitrary (K a b) where
+    arbitrary = do
+      x <- arbitrary
+      return (K x)
+
+  functorComposeForK :: (K Int Int) -> IntInt -> IntInt -> Bool
+  functorComposeForK x (Fun _ f) (Fun _ g) = functorCompose f g x
 
   newtype Flip f a b = Flip (f b a) deriving (Eq, Show)
 
@@ -109,5 +141,14 @@ module Chapter16.Exercises where
     fmap f (Read g) = Read (f . g)
 
 -- way to use it and run (runFun (fmap (*2) (Read (read :: (String -> Int))))) "2"
+
+  chapter16Exercises :: IO ()
+  chapter16Exercises = do
+    quickCheck (functorIdentity :: (Quant Int Int) -> Bool)
+    quickCheck functorComposeForQuant
+    quickCheck (functorIdentity :: (K Int Int) -> Bool)
+    quickCheck functorComposeForK
+
+
 
 
