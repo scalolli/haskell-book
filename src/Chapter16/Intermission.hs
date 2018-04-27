@@ -172,6 +172,45 @@ module Chapter16.Intermission where
   fComposeForFour' :: (Four' Int Int) -> IntInt -> IntInt -> Bool
   fComposeForFour' x (Fun _ f) (Fun _ g) = functorCompose f g x
 
+-- Functor instance for Possibly
+
+  data Possibly a = LolNope | Yeppers a deriving (Eq, Show)
+
+  instance Functor Possibly where
+    fmap _ LolNope = LolNope
+    fmap f (Yeppers a) = Yeppers (f a)
+
+  instance (Arbitrary a) => Arbitrary (Possibly a) where
+    arbitrary = do
+      a <- arbitrary
+      (elements [Yeppers a, LolNope])
+
+  functorIdentityForPossibly :: (Possibly Int) -> Bool
+  functorIdentityForPossibly x = functorIdentity x
+
+  fComposeForPossibly :: (Possibly Int) -> IntInt -> IntInt -> Bool
+  fComposeForPossibly x (Fun _ f) (Fun _ g) = functorCompose f g x
+
+--  Functor instance for Sum
+
+  data Sum a b = First a | Second b deriving (Eq, Show)
+
+  instance Functor (Sum a) where
+    fmap _ (First a) = (First a)
+    fmap f (Second b) = Second (f b)
+
+  instance (Arbitrary a, Arbitrary b) => Arbitrary (Sum a b) where
+    arbitrary = do
+      a <- arbitrary
+      b <- arbitrary
+      (elements [First a, Second b])
+
+  functorIdentityForSum :: (Sum Int Int) -> Bool
+  functorIdentityForSum x = functorIdentity x
+
+  fComposeForSum :: (Sum Int Int) -> IntInt -> IntInt -> Bool
+  fComposeForSum x (Fun _ f) (Fun _ g) = functorCompose f g x
+
   chapter16Intermission :: IO ()
   chapter16Intermission = do
     quickCheck f
@@ -198,3 +237,9 @@ module Chapter16.Intermission where
 
     quickCheck functorIdentityForFour'
     quickCheck fComposeForFour'
+
+    quickCheck functorIdentityForPossibly
+    quickCheck fComposeForPossibly
+
+    quickCheck functorIdentityForSum
+    quickCheck fComposeForSum
