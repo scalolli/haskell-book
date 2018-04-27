@@ -211,6 +211,18 @@ module Chapter16.Intermission where
   fComposeForSum :: (Sum Int Int) -> IntInt -> IntInt -> Bool
   fComposeForSum x (Fun _ f) (Fun _ g) = functorCompose f g x
 
+-- Functor for Wrap
+
+  data Wrap f a = Wrap (f a) deriving (Eq, Show)
+
+  instance Functor f => Functor (Wrap f) where
+    fmap g (Wrap fa) = Wrap (fmap g fa)
+
+-- Using IO Functor
+
+  getInt :: IO Int
+  getInt = fmap read getLine
+
   chapter16Intermission :: IO ()
   chapter16Intermission = do
     quickCheck f
