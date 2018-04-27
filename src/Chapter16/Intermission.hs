@@ -151,6 +151,27 @@ module Chapter16.Intermission where
   fComposeForFour :: (Four Int Int Int Int) -> IntInt -> IntInt -> Bool
   fComposeForFour x (Fun _ f) (Fun _ g) = functorCompose f g x
 
+-- Functor instance for Four'
+
+  data Four' a b = Four' a a a b deriving (Eq, Show)
+
+  instance Functor (Four' a) where
+    fmap f (Four' a b c d) = Four' a b c (f d)
+
+  instance (Arbitrary a, Arbitrary b) => Arbitrary (Four' a b) where
+    arbitrary = do
+      a <- arbitrary
+      b <- arbitrary
+      c <- arbitrary
+      d <- arbitrary
+      return (Four' a b c d)
+
+  functorIdentityForFour' :: (Four' Int Int) -> Bool
+  functorIdentityForFour' x = functorIdentity x
+
+  fComposeForFour' :: (Four' Int Int) -> IntInt -> IntInt -> Bool
+  fComposeForFour' x (Fun _ f) (Fun _ g) = functorCompose f g x
+
   chapter16Intermission :: IO ()
   chapter16Intermission = do
     quickCheck f
@@ -175,3 +196,5 @@ module Chapter16.Intermission where
     quickCheck functorIdentityForFour
     quickCheck fComposeForFour
 
+    quickCheck functorIdentityForFour'
+    quickCheck fComposeForFour'
