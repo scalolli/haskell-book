@@ -85,3 +85,29 @@ module Chapter16.Exercises where
     fmap f (Cons a b) = Cons (f a) (fmap f b)
 
 
+  data GoatLord a =
+        NoGoat
+      | OneGoat a
+      | MoreGoats (GoatLord a) (GoatLord a) (GoatLord a) deriving (Eq, Show)
+
+  instance Functor GoatLord where
+    fmap _ NoGoat = NoGoat
+    fmap f (OneGoat a) = OneGoat (f a)
+    fmap f (MoreGoats x y z) = MoreGoats (fmap f x) (fmap f y) (fmap f z)
+
+
+  data TalkToMe a = Halt | Print String a | Read { runFun :: (String -> a)}
+
+  instance Show a => Show (TalkToMe a) where
+    show Halt = "Halt"
+    show (Print xs a) = "Print " ++ (show xs) ++ " " ++ (show a)
+    show (Read f) = "Read: a function from String to a"
+
+  instance Functor TalkToMe where
+    fmap _ Halt = Halt
+    fmap f (Print xs a) = Print xs (f a)
+    fmap f (Read g) = Read (f . g)
+
+-- way to use it and run (runFun (fmap (*2) (Read (read :: (String -> Int))))) "2"
+
+
