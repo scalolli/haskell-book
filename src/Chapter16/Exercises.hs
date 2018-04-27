@@ -59,3 +59,29 @@ module Chapter16.Exercises where
   instance Functor f => Functor (LiftItOut f) where
     fmap f (LiftItOut (fa)) = LiftItOut (fmap f fa)
 
+
+  data Parappa f g a = DaWrappa (f a) (g a) deriving (Eq, Show)
+
+  instance (Functor f, Functor g) => Functor (Parappa f g) where
+    fmap f (DaWrappa fa ga) = DaWrappa (fmap f fa) (fmap f ga)
+
+
+  data IgnoreOne f g a b = IgnoringSomething (f a) (g b) deriving (Eq, Show)
+
+  instance Functor g => Functor (IgnoreOne f g a) where
+    fmap f (IgnoringSomething fa gb) = IgnoringSomething fa (fmap f gb)
+
+
+  data Notorious g o a t = Notorious (g o) (g a) (g t) deriving (Eq, Show)
+
+  instance Functor g => Functor (Notorious g o a) where
+    fmap f (Notorious go ga gt) = Notorious go ga (fmap f gt)
+
+
+  data List a = Nil | Cons a (List a) deriving (Eq, Show)
+
+  instance Functor List where
+    fmap f Nil = Nil
+    fmap f (Cons a b) = Cons (f a) (fmap f b)
+
+
