@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts #-}
 
 module Chapter16.Exercises where
 
@@ -69,6 +70,8 @@ module Chapter16.Exercises where
   functorComposeForK :: (K Int Int) -> IntInt -> IntInt -> Bool
   functorComposeForK x (Fun _ f) (Fun _ g) = functorCompose f g x
 
+-- Functor instance for Flip
+
   newtype Flip f a b = Flip (f b a) deriving (Eq, Show)
 
   instance Functor (Flip K b) where
@@ -77,9 +80,23 @@ module Chapter16.Exercises where
 
   data Tuple a b = Tuple a b deriving (Eq, Show)
 
+  instance Functor (Tuple a) where
+    fmap f (Tuple a b) = Tuple a (f b)
+
+  instance (Arbitrary a, Arbitrary b) => Arbitrary (Tuple a b) where
+    arbitrary = do
+      x <- arbitrary
+      y <- arbitrary
+      return (Tuple x y)
+
   instance Functor (Flip Tuple a) where
     fmap f (Flip (Tuple a b)) = Flip $ Tuple (f a) b
 
+--   instance (Arbitrary (Tuple b a)) => Arbitrary (Flip Tuple a b) where
+--     arbitrary = fmap Flip (arbitrary :: Gen (Tuple b a))
+
+  instance (Arbitrary (Tuple b a)) => Arbitrary (Flip Tuple a b) where
+    arbitrary = fmap Flip arbitrary
 
   data EvilGoateeConst a b = GoatyConst b deriving (Eq, Show)
 
@@ -142,12 +159,18 @@ module Chapter16.Exercises where
 
 -- way to use it and run (runFun (fmap (*2) (Read (read :: (String -> Int))))) "2"
 
+  data Pair a b = Pair a b
+  instance (Eq a, Eq b) => Eq (Pair a b) where
+    (Pair w x) == (Pair y z) = (w == y) && (x == z)
+
   chapter16Exercises :: IO ()
   chapter16Exercises = do
     quickCheck (functorIdentity :: (Quant Int Int) -> Bool)
     quickCheck functorComposeForQuant
     quickCheck (functorIdentity :: (K Int Int) -> Bool)
     quickCheck functorComposeForK
+
+    quickCheck (functorIdentity :: (Tuple Int Int) -> Bool)
 
 
 
