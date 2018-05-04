@@ -5,6 +5,8 @@ module Chapter16.Exercises where
 
   import Test.QuickCheck
   import Test.QuickCheck.Function
+  import Test.QuickCheck.Classes
+  import Test.QuickCheck.Checkers
 
   data Sum a b = First a | Second b deriving (Eq, Show)
 
@@ -12,6 +14,13 @@ module Chapter16.Exercises where
     fmap f (First a) = First a
     fmap f (Second b) = Second (f b)
 
+  instance (Arbitrary a, Arbitrary b) => Arbitrary (Sum a b) where
+    arbitrary = do
+        x <- arbitrary
+        y <- arbitrary
+        elements [First x, Second y]
+
+  instance (Eq a, Eq b) => EqProp (Sum a b) where (=-=) = eq
 
   data Company a b c = DeepBlue a c | Something b
 
@@ -172,6 +181,7 @@ module Chapter16.Exercises where
 
     quickCheck (functorIdentity :: (Tuple Int Int) -> Bool)
 
-
+    quickBatch (functor (undefined :: [(String, Int, Int)]))
+    quickBatch (functor (undefined :: (Sum String (String, Int, Int))))
 
 
