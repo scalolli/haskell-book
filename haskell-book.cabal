@@ -20,6 +20,7 @@ executable haskell-testing
   build-depends:       base >= 4.7 && < 5
                        , hspec
                        , QuickCheck
+                       , checkers
 
 library
   hs-source-dirs:
@@ -35,7 +36,7 @@ library
 --      , Chapter9.Cipher
 --      , Chapter11.CeaserCipher
 --      , Chapter16.Intermission
---      , Chapter16.Exercises,
+          Chapter16.Exercises,
           Chapter17.Intermission
 
   default-language: Haskell2010
@@ -53,6 +54,7 @@ test-suite tests
     , containers
     , QuickCheck
     , hspec
+    , checkers
 
   default-language: Haskell2010
 
