@@ -9,6 +9,7 @@ module Chapter17.ZipListMonoid where
 
   instance Monoid (List' a) where
     mempty = Nil'
+
     mappend (Cons' a b) Nil'  = Cons' a b
     mappend Nil' (Cons' a b) = Cons' a b
     mappend Nil' Nil' = Nil'
@@ -31,6 +32,16 @@ module Chapter17.ZipListMonoid where
       x <- arbitrary
       y <- arbitrary
       (elements [(Cons' x y) , Nil'])
+
+  newtype ZipList' a = ZipList' (List' a) deriving (Eq, Show)
+
+  instance Monoid (ZipList' a) where
+    mempty = ZipList' mempty
+
+    mappend (ZipList' Nil') (ZipList' Nil') = ZipList' Nil'
+    mappend (ZipList' Nil') x = ZipList' Nil'
+    mappend x (ZipList' Nil') = ZipList' Nil'
+    mappend (ZipList' (Cons' a b)) (ZipList' l) = ZipList' (Cons' a (mappend b l))
 
   chapter17Exercises :: IO ()
   chapter17Exercises = do
