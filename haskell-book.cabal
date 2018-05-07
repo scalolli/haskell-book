@@ -29,6 +29,9 @@ library
   build-depends:
       base >=4.7 && <5
       , QuickCheck
+      , checkers
+      , generic-arbitrary
+
   exposed-modules:
 --        Chapter8.WordNumber
 --      , Chapter14.QuickCheckExercises
@@ -38,7 +41,8 @@ library
 --      , Chapter11.CeaserCipher
 --      , Chapter16.Intermission
           Chapter16.Exercises,
-          Chapter17.Intermission
+          Chapter17.Intermission,
+          Chapter17.ZipListMonoid
 
   default-language: Haskell2010
 
