@@ -21,6 +21,7 @@ executable haskell-testing
                        , hspec
                        , QuickCheck
                        , checkers
+                       , generic-arbitrary
 
 library
   hs-source-dirs:

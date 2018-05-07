@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 module Chapter16.Exercises where
 
@@ -7,27 +8,43 @@ module Chapter16.Exercises where
   import Test.QuickCheck.Function
   import Test.QuickCheck.Classes
   import Test.QuickCheck.Checkers
+  import GHC.Generics (Generic)
+  import Test.QuickCheck.Arbitrary.Generic
 
-  data Sum a b = First a | Second b deriving (Eq, Show)
+-- Functor for Sum a b
+  data Sum a b = First a | Second b deriving (Eq, Show, Generic)
 
   instance Functor (Sum e) where
     fmap f (First a) = First a
     fmap f (Second b) = Second (f b)
 
   instance (Arbitrary a, Arbitrary b) => Arbitrary (Sum a b) where
-    arbitrary = do
-        x <- arbitrary
-        y <- arbitrary
-        elements [First x, Second y]
+    arbitrary = genericArbitrary
+
+--   instance (Arbitrary a, Arbitrary b) => Arbitrary (Sum a b) where
+--     arbitrary = do
+--         x <- arbitrary
+--         y <- arbitrary
+--         elements [First x, Second y]
 
   instance (Eq a, Eq b) => EqProp (Sum a b) where (=-=) = eq
 
-  data Company a b c = DeepBlue a c | Something b
+-- Functor for Company a b c
+
+  data Company a b c = DeepBlue a c | Something b deriving (Eq, Show, Generic)
 
   instance Functor (Company a b) where
     fmap f (DeepBlue a c) = DeepBlue a (f c)
     fmap f (Something b) = Something b
 
+  instance (Arbitrary a, Arbitrary b, Arbitrary c) => Arbitrary (Company a b c) where
+    arbitrary = do
+      x <- elements [DeepBlue <$> arbitrary <*> arbitrary, Something <$> arbitrary]
+      x
+
+  instance (Eq a, Eq b, Eq c) => EqProp (Company a b c) where (=-=) = eq
+
+--   Functor More
 
   data More a b = L b a b | R a b a deriving (Eq, Show)
 
@@ -183,5 +200,9 @@ module Chapter16.Exercises where
 
     quickBatch (functor (undefined :: [(String, Int, Int)]))
     quickBatch (functor (undefined :: (Sum String (String, Int, Int))))
+
+--     quickBatch (functor (undefined :: (Company String String (String, Int, Int))))
+
+
 
 
