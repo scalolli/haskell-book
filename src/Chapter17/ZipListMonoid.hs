@@ -1,5 +1,10 @@
 module Chapter17.ZipListMonoid where
 
+  import Test.QuickCheck
+  import Test.QuickCheck.Classes
+  import Test.QuickCheck.Function
+  import Test.QuickCheck.Checkers
+
   data List' a = Nil' | Cons' a (List' a) deriving (Eq, Show)
 
   instance Monoid (List' a) where
@@ -18,4 +23,17 @@ module Chapter17.ZipListMonoid where
     Nil' <*> x = Nil'
     y <*> Nil' = Nil'
     a@(Cons' f l) <*> b@(Cons' x y) = (Cons' (f x) (a <*> y)) `mappend` (l <*> b)
+
+  instance Eq a => EqProp (List' a) where (=-=) = eq
+
+  instance Arbitrary a => Arbitrary (List' a) where
+    arbitrary = do
+      x <- arbitrary
+      y <- arbitrary
+      (elements [(Cons' x y) , Nil'])
+
+  chapter17Exercises :: IO ()
+  chapter17Exercises = do
+    quickBatch (functor (undefined :: (List' (String, Int, Int))))
+    quickBatch (monoid (undefined :: (List' String)))
 
