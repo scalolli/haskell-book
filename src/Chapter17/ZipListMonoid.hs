@@ -43,6 +43,21 @@ module Chapter17.ZipListMonoid where
     mappend x (ZipList' Nil') = ZipList' Nil'
     mappend (ZipList' (Cons' a b)) (ZipList' l) = ZipList' (Cons' a (mappend b l))
 
+
+  append :: List' a -> List' a -> List' a
+  append Nil' ys = ys
+  append (Cons' x xs) ys = Cons' x (append xs ys)
+
+  fold :: (a -> b -> b) -> b -> List' a -> b
+  fold _ b Nil' = b
+  fold f b (Cons' h t) = f h (fold f b t)
+
+  concat' :: List' (List' a) -> List' a
+  concat' = fold append Nil'
+
+  flatMap :: (a -> List' b) -> List' a -> List' b
+  flatMap f xs = concat' (fmap f xs)
+
   chapter17Exercises :: IO ()
   chapter17Exercises = do
     quickBatch (functor (undefined :: (List' (String, Int, Int))))
