@@ -5,6 +5,7 @@ module Chapter17.ZipListMonoid where
   import Test.QuickCheck.Function
   import Test.QuickCheck.Checkers
   import Data.Monoid
+  import Control.Applicative
 
   data List' a = Nil' | Cons' a (List' a) deriving (Eq, Show)
 
@@ -49,12 +50,10 @@ module Chapter17.ZipListMonoid where
 
   newtype ZipList' a = ZipList' (List' a) deriving (Eq, Show)
 
-  takeList' :: Int -> ZipList' a -> ZipList' a
-  takeList' no (ZipList' xs) = ZipList' (go no xs)
-    where go :: Int -> List' a -> List' a
-          go n Nil'         = Nil'
-          go 0 (Cons' x xs) = Nil'
-          go n (Cons' x xs) = Cons' x (go (n-1) xs)
+  takeList' :: Int -> List' a -> List' a
+  takeList' n Nil'         = Nil'
+  takeList' 0 (Cons' x xs) = Nil'
+  takeList' n (Cons' x xs) = Cons' x (takeList' (n-1) xs)
 
   mkInfiniteList :: ZipList' Integer
   mkInfiniteList = ZipList' go
@@ -65,8 +64,8 @@ module Chapter17.ZipListMonoid where
     mempty = ZipList' mempty
 
     mappend (ZipList' Nil') (ZipList' Nil') = ZipList' Nil'
-    mappend (ZipList' Nil') x = ZipList' Nil'
-    mappend x (ZipList' Nil') = ZipList' Nil'
+    mappend (ZipList' Nil') x = x
+    mappend x (ZipList' Nil') = x
     mappend (ZipList' (Cons' a b)) (ZipList' l) = ZipList' (Cons' a (mappend b l))
 
   instance Functor ZipList' where
@@ -74,18 +73,46 @@ module Chapter17.ZipListMonoid where
     fmap f (ZipList' (Cons' h t)) = ZipList' (Cons' (f h) (fmap f t))
 
   instance Applicative ZipList' where
-    pure f                          = ZipList' (Cons' f Nil')
+    pure f                          = ZipList' go
+        where go = Cons' f go
+
     (ZipList' Nil') <*> xs          = ZipList' Nil'
     xs <*> (ZipList' Nil')          = ZipList' Nil'
-    (ZipList' xs) <*> (ZipList' ys) = ZipList' (go xs ys)
-        where
-            go (Cons' f fs) (Cons' y ys) = Cons' (f y) (go fs ys)
-            go           _   Nil'        = Nil'
-            go           Nil' _          = Nil'
+    (ZipList' xs) <*> (ZipList' ys) = ZipList' (zipWithForList' xs ys)
+
+  zipWithForList' :: (List' (a -> b))  -> List' a -> List' b
+  zipWithForList' x Nil' = Nil'
+  zipWithForList' Nil' x = Nil'
+  zipWithForList' (Cons' f fs) (Cons' y ys) = Cons' (f y) (zipWithForList' fs ys)
+
+  instance Arbitrary a => Arbitrary (ZipList' a) where
+     arbitrary = do
+      x <- arbitrary
+      return (ZipList' x)
+
+  instance Eq a => EqProp (ZipList' a) where
+
+    xs =-= ys = xs' `eq` ys'
+      where xs' = let (ZipList' l) = xs
+                  in takeList' 3000 l
+            ys' = let (ZipList' l) = ys
+                  in takeList' 3000 l
+
+  mkZipList :: [a] -> ZipList' a
+  mkZipList xs = ZipList' (go xs)
+      where
+          go []      = Nil'
+          go (y: ys) = Cons' y (go ys)
+
 
   chapter17Exercises :: IO ()
   chapter17Exercises = do
     quickBatch (functor (undefined :: (List' (String, Int, Int))))
     quickBatch (monoid (undefined :: (List' String)))
     quickBatch (applicative (undefined :: (List' (String, Int, Int))))
+
+    quickBatch (functor (undefined :: (ZipList' (String, Int, Int))))
+    quickBatch (monoid (undefined :: (ZipList' String)))
+    quickBatch (applicative (undefined :: (ZipList' (String, Int, Int))))
+
 
