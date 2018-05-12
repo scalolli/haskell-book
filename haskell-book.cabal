@@ -44,7 +44,8 @@ library
           Chapter17.Intermission,
           Chapter17.ListApplicative,
           Chapter17.ZipListApplicative,
-          Chapter17.ValidationApplicative
+          Chapter17.ValidationApplicative,
+          Chapter17.Exercises
 
   default-language: Haskell2010
 
