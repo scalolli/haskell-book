@@ -79,6 +79,99 @@ module Chapter17.Exercises where
 
     (Two a f) <*> (Two c d) = Two (a <> c) (f d)
 
+--     instances for Three
+
+  data Three a b c = Three a b c deriving (Eq, Show)
+
+  instance (Arbitrary a, Arbitrary b, Arbitrary c) => Arbitrary (Three a b c) where
+    arbitrary = Three <$> arbitrary <*> arbitrary <*> arbitrary
+
+  instance (Eq a, Eq b, Eq c) => EqProp (Three a b c) where
+    (=-=) = eq
+
+  instance (Monoid a, Monoid b, Monoid c) => Monoid (Three a b c) where
+    mempty = Three mempty mempty mempty
+
+    (Three a b c) `mappend` (Three d e f) = Three (a `mappend` d) (b `mappend` e) (c `mappend` f)
+
+  instance Functor (Three a b) where
+    fmap f (Three a b c) = Three a b (f c)
+
+  instance (Monoid a, Monoid b) => Applicative (Three a b) where
+    pure x = Three mempty mempty x
+
+    (Three a b f) <*> (Three c d e) = Three (a <> c) (b <> d) (f e)
+
+-- instances for Three'
+
+  data Three' a b = Three' a b b deriving (Eq, Show)
+
+  instance (Arbitrary a, Arbitrary b) => Arbitrary (Three' a b) where
+    arbitrary = Three' <$> arbitrary <*> arbitrary <*> arbitrary
+
+  instance (Eq a, Eq b) => EqProp (Three' a b) where
+    (=-=) = eq
+
+  instance (Monoid a, Monoid b) => Monoid (Three' a b) where
+    mempty = Three' mempty mempty mempty
+
+    (Three' a b c) `mappend` (Three' d e f) = Three' (a `mappend` d) (b `mappend` e) (c `mappend` f)
+
+  instance Functor (Three' a) where
+    fmap f (Three' a b c) = Three' a (f b) (f c)
+
+  instance (Monoid a) => Applicative (Three' a) where
+    pure x = Three' mempty x x
+
+    (Three' a f g) <*> (Three' c d e) = Three' (a <> c) (f d) (g e)
+
+--     instances for Four
+
+  data Four a b c d = Four a b c d deriving (Eq, Show)
+
+  instance (Arbitrary a, Arbitrary b, Arbitrary c, Arbitrary d) => Arbitrary (Four a b c d) where
+    arbitrary = Four <$> arbitrary <*> arbitrary <*> arbitrary <*> arbitrary
+
+  instance (Eq a, Eq b, Eq c, Eq d) => EqProp (Four a b c d) where
+    (=-=) = eq
+
+  instance (Monoid a, Monoid b, Monoid c, Monoid d) => Monoid (Four a b c d) where
+    mempty = Four mempty mempty mempty mempty
+
+    (Four a b c d) `mappend` (Four e f g h) = Four (a `mappend` e) (b `mappend` f) (c `mappend` g) (d `mappend` h)
+
+  instance Functor (Four a b c) where
+    fmap f (Four a b c d) = Four a b c (f d)
+
+  instance (Monoid a, Monoid b, Monoid c) => Applicative (Four a b c) where
+    pure x = Four mempty mempty mempty x
+
+    (Four a b c f) <*> (Four d e x y) = Four (a <> d) (b <> e) (c <> x) (f y)
+
+-- instances for Four'
+
+  data Four' a b = Four' a a a b deriving (Eq, Show)
+
+  instance (Arbitrary a, Arbitrary b) => Arbitrary (Four' a b) where
+    arbitrary = Four' <$> arbitrary <*> arbitrary <*> arbitrary <*> arbitrary
+
+  instance (Eq a, Eq b) => EqProp (Four' a b) where
+    (=-=) = eq
+
+  instance (Monoid a, Monoid b) => Monoid (Four' a b) where
+    mempty = Four' mempty mempty mempty mempty
+
+    (Four' a b c d) `mappend` (Four' e f g h) = Four' (a `mappend` e) (b `mappend` f) (c `mappend` g) (d `mappend` h)
+
+  instance Functor (Four' a) where
+    fmap f (Four' a b c d) = Four' a b c (f d)
+
+  instance (Monoid a) => Applicative (Four' a) where
+    pure x = Four' mempty mempty mempty x
+
+    (Four' a b c fn) <*> (Four' d e f g) = Four' (a <> d) (b <> e) (c <> f) (fn g)
+
+
   chapter17TestExercises :: IO ()
   chapter17TestExercises = do
     quickBatch (monoid (undefined :: (Pair (String))))
@@ -88,4 +181,21 @@ module Chapter17.Exercises where
     quickBatch (monoid (undefined :: Two String String))
     quickBatch (functor (undefined :: Two String (String, String, String)))
     quickBatch (applicative (undefined :: Two String (String, String, String)))
+
+    quickBatch (monoid (undefined :: Three String String String))
+    quickBatch (functor (undefined :: Three String String (String, String, String)))
+    quickBatch (applicative (undefined :: Three String String (String, String, String)))
+
+--  type Three' String (String, String, String) means Three' String implies the functor instance for (Three
+    quickBatch (monoid (undefined :: Three' String String))
+    quickBatch (functor (undefined :: Three' String (String, String, String)))
+    quickBatch (applicative (undefined :: Three' String (String, String, String)))
+
+    quickBatch (monoid (undefined :: Four String String String String))
+    quickBatch (functor (undefined :: Four String String String (String, String, String)))
+    quickBatch (applicative (undefined :: Four String String String (String, String, String)))
+
+    quickBatch (monoid (undefined :: Four' String String))
+    quickBatch (functor (undefined :: Four' String (String, String, String)))
+    quickBatch (applicative (undefined :: Four' String (String, String, String)))
 
