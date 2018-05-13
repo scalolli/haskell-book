@@ -5,6 +5,7 @@ module Chapter17.Exercises where
   import Test.QuickCheck.Function
   import Test.QuickCheck.Classes
   import Test.QuickCheck.Checkers
+  import Control.Applicative
 
   pureArr :: a -> [a]
   pureArr a = [a]
@@ -172,6 +173,15 @@ module Chapter17.Exercises where
     (Four' a b c fn) <*> (Four' d e f g) = Four' (a <> d) (b <> e) (c <> f) (fn g)
 
 
+  stops :: String
+  stops = "pbtdkg"
+
+  vowels :: String
+  vowels = "aeiou"
+
+  combos :: [a] -> [b] -> [c] -> [(a, b, c)]
+  combos xs ys zs = liftA3 (,,) xs ys zs
+
   chapter17TestExercises :: IO ()
   chapter17TestExercises = do
     quickBatch (monoid (undefined :: (Pair (String))))
@@ -198,4 +208,6 @@ module Chapter17.Exercises where
     quickBatch (monoid (undefined :: Four' String String))
     quickBatch (functor (undefined :: Four' String (String, String, String)))
     quickBatch (applicative (undefined :: Four' String (String, String, String)))
+
+    putStrLn $ "Stop Vowel Stop combinations:- " ++ (show $ combos stops vowels stops)
 
