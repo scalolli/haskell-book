@@ -45,7 +45,9 @@ library
           Chapter17.ListApplicative,
           Chapter17.ZipListApplicative,
           Chapter17.ValidationApplicative,
-          Chapter17.Exercises
+          Chapter17.Exercises,
+          RandomHacking.SumTypes,
+          Chapter18.Intermissions
 
   default-language: Haskell2010
 
