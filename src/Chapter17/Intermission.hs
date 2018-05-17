@@ -102,6 +102,8 @@ module Chapter17.Intermission where
           Nothing -> Nothing
           Just address -> Just (Person name address)
 
+  mkPerson' :: String -> String -> Maybe Person
+  mkPerson' n a = liftA2 Person (mkName n) (mkAddress a)
 
   data Cow = Cow {
     name :: String,
