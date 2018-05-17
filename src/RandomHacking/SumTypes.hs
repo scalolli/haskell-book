@@ -11,7 +11,7 @@ module RandomHacking.SumTypes where
               | TwoInitialsWithLast Char Char LastName
   data Creator = AuthorCreator Author | ArtistCreator Artist
   data Author = Author Name
-  data Artist = Person Name | Band String
+  data Artist = PersonCustom Name | Band String
 
   data Book = Book
                 { author :: Creator
