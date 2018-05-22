@@ -31,11 +31,41 @@ module Chapter18.Exercises where
 
   instance EqProp (Nope a) where (=-=) = eq
 
-  nopeMonadTests :: IO ()
-  nopeMonadTests = do
+--   instance for Identity
+
+  newtype MyIdentityAgain a = MyIdentityAgain a  deriving (Eq, Ord, Show)
+
+  instance Monoid a => Monoid (MyIdentityAgain a) where
+    mempty = MyIdentityAgain mempty
+
+    (MyIdentityAgain a) `mappend` (MyIdentityAgain b) = MyIdentityAgain (a `mappend` b)
+
+  instance Functor MyIdentityAgain where
+    fmap f (MyIdentityAgain a) = MyIdentityAgain (f a)
+
+  instance Applicative MyIdentityAgain where
+    pure = MyIdentityAgain
+
+    MyIdentityAgain f <*> MyIdentityAgain a = MyIdentityAgain (f a)
+
+  instance Monad MyIdentityAgain where
+    return = MyIdentityAgain
+
+    (MyIdentityAgain a) >>= f = f a
+
+  instance Arbitrary a => Arbitrary (MyIdentityAgain a) where
+    arbitrary = MyIdentityAgain <$> arbitrary
+
+  instance Eq a => EqProp (MyIdentityAgain a) where (=-=) = eq
+
+  chapter18ExerciseTests :: IO ()
+  chapter18ExerciseTests = do
     quickBatch $ monoid (undefined :: Nope String)
     quickBatch $ functor (undefined :: Nope (String, String, String))
     quickBatch $ applicative (undefined :: Nope (String, String, String))
     quickBatch $ monad (undefined :: Nope (String, String, String))
 
-
+    quickBatch $ monoid (undefined :: MyIdentityAgain String)
+    quickBatch $ functor (undefined :: MyIdentityAgain (String, String, String))
+    quickBatch $ applicative (undefined :: MyIdentityAgain (String, String, String))
+    quickBatch $ monad (undefined :: MyIdentityAgain (String, String, String))
