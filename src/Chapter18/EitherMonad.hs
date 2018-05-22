@@ -56,11 +56,11 @@ module Chapter18.EitherMonad where
 
 
 --   Right Identity
-        m >>= return    = m
+--         m >>= return    = m
 --   Left Identity
-        return a >>= f  = f a
+--         return a >>= f  = f a
 --   Composition
-        m >>= f >>= g   = m >>= (\x -> f x >>= g)
+--         m >>= f >>= g   = m >>= (\x -> f x >>= g)
 
 
 
