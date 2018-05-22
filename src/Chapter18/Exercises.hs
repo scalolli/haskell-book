@@ -58,6 +58,34 @@ module Chapter18.Exercises where
 
   instance Eq a => EqProp (MyIdentityAgain a) where (=-=) = eq
 
+-- List Monad
+
+  data ListChp18 a = ListNil | ListChp18Cons a (ListChp18 a) deriving (Eq, Show)
+
+  instance Monoid (ListChp18 a) where
+    mempty = ListNil
+
+    ListNil `mappend` x  = x
+    x `mappend` ListNil = x
+    (ListChp18Cons x xs) `mappend` other@(ListChp18Cons y ys) = ListChp18Cons  x $ xs `mappend` other
+
+  instance Functor ListChp18 where
+    fmap f ListNil = ListNil
+    fmap f (ListChp18Cons x xs) = ListChp18Cons (f x) (fmap f xs)
+
+  instance Applicative ListChp18 where
+    pure a = ListChp18Cons a ListNil
+
+    ListNil <*> xs      = ListNil
+    xs      <*> ListNil = ListNil
+    (ListChp18Cons f fs) <*> ys = (f <$> ys) `mappend` (fs <*> ys)
+
+
+  instance Arbitrary a => Arbitrary (ListChp18 a) where
+    arbitrary = oneof [return ListNil, ListChp18Cons <$> arbitrary <*> arbitrary]
+
+  instance Eq a => EqProp (ListChp18 a) where (=-=) = eq
+
   chapter18ExerciseTests :: IO ()
   chapter18ExerciseTests = do
     quickBatch $ monoid (undefined :: Nope String)
@@ -69,3 +97,8 @@ module Chapter18.Exercises where
     quickBatch $ functor (undefined :: MyIdentityAgain (String, String, String))
     quickBatch $ applicative (undefined :: MyIdentityAgain (String, String, String))
     quickBatch $ monad (undefined :: MyIdentityAgain (String, String, String))
+
+    quickBatch $ monoid (undefined :: ListChp18 String)
+    quickBatch $ functor (undefined :: ListChp18 (String, String, String))
+    quickBatch $ applicative (undefined :: ListChp18 (String, String, String))
+
