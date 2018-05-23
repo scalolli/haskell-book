@@ -81,6 +81,12 @@ module Chapter18.Exercises where
     (ListChp18Cons f fs) <*> ys = (f <$> ys) `mappend` (fs <*> ys)
 
 
+  instance Monad ListChp18 where
+    return = pure
+
+    ListNil >>= _              = ListNil
+    (ListChp18Cons x xs) >>= f = (f x) `mappend` (xs >>= f)
+
   instance Arbitrary a => Arbitrary (ListChp18 a) where
     arbitrary = oneof [return ListNil, ListChp18Cons <$> arbitrary <*> arbitrary]
 
@@ -101,4 +107,5 @@ module Chapter18.Exercises where
     quickBatch $ monoid (undefined :: ListChp18 String)
     quickBatch $ functor (undefined :: ListChp18 (String, String, String))
     quickBatch $ applicative (undefined :: ListChp18 (String, String, String))
+    quickBatch $ monad (undefined :: ListChp18 (String, String, String))
 
