@@ -5,6 +5,7 @@ module Chapter18.Exercises where
   import Test.QuickCheck.Function
   import Test.QuickCheck.Classes
   import Test.QuickCheck.Checkers
+  import Control.Monad
 
   data Nope a = NopeDotJpg deriving (Eq, Show)
 
@@ -91,6 +92,18 @@ module Chapter18.Exercises where
     arbitrary = oneof [return ListNil, ListChp18Cons <$> arbitrary <*> arbitrary]
 
   instance Eq a => EqProp (ListChp18 a) where (=-=) = eq
+
+  j :: Monad m => m (m a) -> m a
+  j m = m >>= id
+
+  l1 :: Monad m => (a -> b) -> m a -> m b
+  l1 f m = m >>= (\x -> return (f x))
+
+  l2 :: Monad m => (a -> b -> c) -> m a -> m b -> m c
+  l2 f m1 m2 = m1 >>= (\x -> m2 >>= (\y -> return $ f x y))
+
+  a :: Monad m => m a -> m (a -> b) -> m b
+  a m mf = m >>= (\x -> mf >>= (\f -> return $ f x))
 
   chapter18ExerciseTests :: IO ()
   chapter18ExerciseTests = do
