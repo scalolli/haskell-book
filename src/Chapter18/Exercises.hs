@@ -105,6 +105,15 @@ module Chapter18.Exercises where
   a :: Monad m => m a -> m (a -> b) -> m b
   a m mf = m >>= (\x -> mf >>= (\f -> return $ f x))
 
+  meh :: Monad m => [a] -> (a -> m b) -> m [b]
+  meh xs mf = meh' xs mf []
+      where
+         meh' [] _ acc      = return acc
+         meh' (x:xs) mf acc = (mf x) >>= (\b ->  meh' xs mf (acc ++ [b]))
+
+  flipType :: Monad m => [m a] -> m [a]
+  flipType xs = meh xs id
+
   chapter18ExerciseTests :: IO ()
   chapter18ExerciseTests = do
     quickBatch $ monoid (undefined :: Nope String)
