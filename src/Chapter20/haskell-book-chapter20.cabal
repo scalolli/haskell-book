@@ -33,7 +33,8 @@ library
       , generic-arbitrary
 
   exposed-modules:
-    Intermissions
+    Intermissions,
+    Exercises
 
   default-language: Haskell2010
 
