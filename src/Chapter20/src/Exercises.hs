@@ -10,3 +10,13 @@ module Exercises where
 
   myElem :: (Foldable t, Eq a) => a -> t a -> Bool
   myElem a xa = getAny $ foldMap (\x -> Any (x == a)) xa
+
+  myMinimum :: (Foldable t, Ord a) => t a -> Maybe a
+  myMinimum xs = foldr compareMaybe Nothing xs
+
+  compareMaybe :: Ord a => a -> Maybe a -> Maybe a
+  compareMaybe a b =
+    case (fmap ( > a) b) of
+      Just True -> Just a
+      Just False -> b
+      Nothing    -> Just a
