@@ -1,4 +1,7 @@
 module Main where
 
   main :: IO ()
-  main = putStrLn "Welcome to Chapter20 !"
+  main = do
+    line <- getLine
+    putStrLn ("Hello, your line is " ++ line)
+    putStrLn "Welcome to Chapter20 !"

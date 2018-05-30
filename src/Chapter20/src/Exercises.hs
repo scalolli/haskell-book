@@ -12,11 +12,15 @@ module Exercises where
   myElem a xa = getAny $ foldMap (\x -> Any (x == a)) xa
 
   myMinimum :: (Foldable t, Ord a) => t a -> Maybe a
-  myMinimum xs = foldr compareMaybe Nothing xs
+  myMinimum = foldr (compareMaybe (<)) Nothing
 
-  compareMaybe :: Ord a => a -> Maybe a -> Maybe a
-  compareMaybe a b =
-    case (fmap ( > a) b) of
+  myMaximum :: (Foldable t, Ord a) => t a -> Maybe a
+  myMaximum = foldr (compareMaybe (>)) Nothing
+
+
+  compareMaybe :: Ord a => (a -> a -> Bool) -> a -> Maybe a -> Maybe a
+  compareMaybe fn a b =
+    case fmap (fn a) b of
       Just True -> Just a
       Just False -> b
       Nothing    -> Just a
