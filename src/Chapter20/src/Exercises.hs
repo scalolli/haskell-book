@@ -57,7 +57,11 @@ module Exercises where
     quickCheck $ property (forAll (arbitrary :: Gen (Maybe Integer)) validateMyProduct)
 
     quickCheck $ property (forAll (arbitraryForList :: Gen (Int, [Int])) validateMyElem)
+    quickCheck $ property (forAll (arbitraryForList :: Gen (Int, [Int])) validateMyElem)
     quickCheck $ property (forAll (arbitraryForMaybeElem :: Gen (Int, Maybe Int)) validateMyElemForMaybe)
+
+    quickCheck $ property (forAll (arbitrary :: Gen [Integer]) (\xs -> (if (xs /= []) then Just $ minimum xs else Nothing) == myMinimum xs))
+    quickCheck $ property (forAll (arbitrary :: Gen [Integer]) (\xs -> (if (xs /= []) then Just $ maximum xs else Nothing) == myMaximum xs))
 
   validateMySum :: (Foldable t, Eq a, Num a) => t a -> Bool
   validateMySum xs = sum xs == mySum xs
