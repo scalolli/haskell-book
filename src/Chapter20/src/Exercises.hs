@@ -1,6 +1,7 @@
 module Exercises where
 
   import Data.Monoid
+  import Data.Foldable
   import Test.QuickCheck
 
   mySum :: (Foldable t, Num a) => t a -> a
@@ -26,9 +27,20 @@ module Exercises where
       Nothing    -> Just a
 
 
-  myExists :: a -> Maybe a -> Bool
-  myExists = undefined
+  isNull :: Foldable t => t a -> Bool
+  isNull xs = foldr (\_ _ -> False) True xs
 
+  myLength :: Foldable t => t a -> Int
+  myLength xs = getSum $ foldMap (\x -> Sum 1) xs
+
+  myToList :: Foldable t => t a -> [a]
+  myToList = foldr (\a b -> a:b) []
+
+  myFold :: (Foldable t, Monoid m) => t m -> m
+  myFold = foldMap id
+
+  myFoldMap :: (Foldable t, Monoid m) => (a -> m) -> t a -> m
+  myFoldMap f xs = foldr (\a b -> mappend (f a) b) mempty xs
 
 -- try custom gen for verifying my elem
 --   customGen :: Gen (Integer, [Integer])
@@ -62,6 +74,20 @@ module Exercises where
 
     quickCheck $ property (forAll (arbitrary :: Gen [Integer]) (\xs -> (if (xs /= []) then Just $ minimum xs else Nothing) == myMinimum xs))
     quickCheck $ property (forAll (arbitrary :: Gen [Integer]) (\xs -> (if (xs /= []) then Just $ maximum xs else Nothing) == myMaximum xs))
+
+    quickCheck $ property (forAll (arbitrary :: Gen [Integer]) (\xs -> null xs == isNull xs))
+    quickCheck $ property (forAll (arbitrary :: Gen (Maybe Integer)) (\xs -> null xs == isNull xs))
+
+    quickCheck $ property (forAll (arbitrary :: Gen [Integer]) (\xs -> length xs == myLength xs))
+    quickCheck $ property (forAll (arbitrary :: Gen (Maybe Integer)) (\xs -> length xs == myLength xs))
+
+    quickCheck $ property (forAll (arbitrary :: Gen (Maybe Integer)) (\xs -> toList xs == myToList xs))
+    quickCheck $ property (forAll (arbitrary :: Gen [Integer]) (\xs -> toList xs == myToList xs))
+    
+    quickCheck $ property (forAll ((fmap . fmap) Sum $ arbitrary :: Gen [Sum Int]) (\xs -> fold xs == myFold xs))
+    quickCheck $ property (forAll ((fmap . fmap) Product $ arbitrary :: Gen [Product Int]) (\xs -> fold xs == myFold xs))
+    
+    quickCheck $ property (forAll (arbitrary :: Gen [Int]) (\xs -> foldMap Sum xs == myFoldMap Sum xs))
 
   validateMySum :: (Foldable t, Eq a, Num a) => t a -> Bool
   validateMySum xs = sum xs == mySum xs
