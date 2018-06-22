@@ -60,6 +60,39 @@ module Exercises where
       a <- arbitrary
       return (a, Just a)
 
+  data Constant a b = Constant b
+
+  instance Foldable (Constant a) where
+    foldr f i (Constant b) = f b i
+
+  data Two a b = Two a b
+
+  instance Foldable (Two a) where
+    foldr f i (Two a b) = f b i
+
+  data Three a b c = Three a b c
+
+  instance Foldable (Three a b) where
+    foldr f i (Three a b c) = f c i
+
+
+  data Three' a b = Three' a b b
+
+  instance Foldable (Three' a) where
+    foldr f i (Three' a b c) = f b (f c i)
+
+
+  data Four' a b = Four' a b b b
+
+  instance Foldable (Four' a) where
+    foldr f i (Four' a b c d) = f b $ f c $ f d i
+
+  myFilterF ::   (Applicative f ,
+                Foldable t,
+                Monoid (f a)) =>
+             (a -> Bool) -> t a -> f a
+  myFilterF f xs = foldMap (\x -> if (f x) then (pure x) else mempty) xs
+
   chapter20Intermissions:: IO ()
   chapter20Intermissions = do
     quickCheck $ property (forAll (arbitrary :: Gen [Integer]) validateMySum)
