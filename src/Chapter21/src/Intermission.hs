@@ -1,4 +1,4 @@
-module Chapter21.Intermission where
+module Intermission where
 
 data Query     = Query
 data SomeObj   = SomeObj
