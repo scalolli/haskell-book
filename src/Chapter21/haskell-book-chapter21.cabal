@@ -34,7 +34,8 @@ library
       , wreq
 
   exposed-modules:
-    Intermission    
+    Intermission,
+    MyList
 
   default-language: Haskell2010
 

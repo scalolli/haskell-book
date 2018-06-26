@@ -16,4 +16,4 @@ makeIoOnlyObj = undefined
 
 pipelineFn :: Query -> IO (Either Err [(SomeObj, IoOnlyObj)]) 
 pipelineFn = 
-    (traverse makeIoOnlyObj . traverse decodeFn =<<) . fetchFn           
+    (traverse makeIoOnlyObj . traverse decodeFn =<<) . fetchFn
