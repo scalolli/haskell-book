@@ -25,6 +25,7 @@ module MyList where
   instance Foldable List' where
     foldMap f (Cons' x xs) = (f x) <> (foldMap f xs)
 
+-- Link to explanation https://gist.github.com/scalolli/6fd86f72566fadcc7173048e2cb68fdf
   instance Traversable List' where
     traverse f Nil'         = pure mempty
     traverse f (Cons' x xs) = ((\x y -> Cons' x y) <$> f x <*> traverse f xs)
