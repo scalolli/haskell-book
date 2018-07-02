@@ -89,6 +89,8 @@ module Exercises where
   identityTrigger :: Identity (Int, Int,  Maybe (Sum Int))
   identityTrigger = undefined
 
+
+-- Constant
   newtype Constant a b = Constant {getConstant :: a} deriving (Eq, Ord, Show)
 
   instance Monoid a => Monoid (Constant a b) where
@@ -117,6 +119,42 @@ module Exercises where
 
   instance Eq a => EqProp (Constant a b) where (=-=) = eq
 
+--   Maybe
+
+  data Optional a = Nada | Yep a deriving (Eq, Show)
+
+  instance Monoid a => Monoid (Optional a) where
+    mempty = Yep mempty
+
+    mappend (Yep a) (Yep b) = Yep (a `mappend` b)
+    Nada `mappend` _        = Nada
+    _    `mappend` Nada     = Nada
+
+
+  instance Arbitrary a => Arbitrary (Optional a) where
+    arbitrary = oneof [return Nada, Yep <$> arbitrary]
+
+  instance Eq a => EqProp (Optional a) where (=-=) = eq
+
+  instance Functor Optional where
+    fmap f (Yep a) = Yep (f a)
+    fmap f Nada    = Nada
+
+  instance Applicative Optional where
+    pure = Yep
+
+    (Yep f) <*> (Yep a) = Yep (f a)
+    Nada <*> _    = Nada
+    _ <*> Nada    = Nada
+
+  instance Foldable Optional where
+    foldMap f (Yep a) = f a
+    foldMap f Nada    = mempty
+
+  instance Traversable Optional where
+    traverse f (Yep a)    = Yep <$> f a
+    traverse f Nada       = pure Nada
+
   chapter21Exercises :: IO ()
   chapter21Exercises = do
     quickBatch (traversable identityTrigger)
@@ -124,5 +162,11 @@ module Exercises where
     quickBatch $ functor (undefined :: Constant String (String, String, String))
     quickBatch $ applicative (undefined :: Constant String (String, String, String))
     quickBatch (traversable (undefined :: Constant String (Int, String, Maybe String)))
+
+    quickBatch $ (monoid (undefined :: (Optional String)))
+    quickBatch $ (functor (undefined :: Optional (Int, Int, String)))
+    quickBatch $ (applicative (undefined :: Optional (Int, Int, String)))
+    quickBatch $ (traversable (undefined :: Optional (Int, Int, Maybe String)))
+
 
 
