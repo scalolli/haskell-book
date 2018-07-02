@@ -89,8 +89,40 @@ module Exercises where
   identityTrigger :: Identity (Int, Int,  Maybe (Sum Int))
   identityTrigger = undefined
 
+  newtype Constant a b = Constant {getConstant :: a} deriving (Eq, Ord, Show)
+
+  instance Monoid a => Monoid (Constant a b) where
+    mempty = Constant mempty
+
+    mappend (Constant a) (Constant b) = Constant (a `mappend` b)
+
+  instance Functor (Constant a) where
+    fmap f (Constant a) = Constant a
+
+  instance Monoid a => Applicative (Constant a) where
+     pure b = Constant mempty
+
+     (Constant a) <*> (Constant b) = Constant (a `mappend` b)
+
+  instance Foldable (Constant a) where
+    foldMap f (Constant a) = mempty
+
+
+  instance Traversable (Constant a) where
+    traverse f (Constant a) = pure $ Constant a
+
+
+  instance Arbitrary a => Arbitrary (Constant a b) where
+    arbitrary = Constant <$> arbitrary
+
+  instance Eq a => EqProp (Constant a b) where (=-=) = eq
+
   chapter21Exercises :: IO ()
   chapter21Exercises = do
     quickBatch (traversable identityTrigger)
+    quickBatch $ monoid (undefined :: (Constant String String))
+    quickBatch $ functor (undefined :: Constant String (String, String, String))
+    quickBatch $ applicative (undefined :: Constant String (String, String, String))
+    quickBatch (traversable (undefined :: Constant String (Int, String, Maybe String)))
 
 
