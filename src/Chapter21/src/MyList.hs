@@ -37,7 +37,7 @@ module MyList where
 
   instance Arbitrary a => Arbitrary (List' a) where
     arbitrary = do
-      b <- choose (0, 100)
+      b <- choose (0, 10)
       xs <- (take b <$> arbitrary)
       return $ buildMyList xs
 
@@ -51,5 +51,5 @@ module MyList where
   testsForMyListInstances = do
     quickBatch $ monoid (undefined :: (List' String))
     quickBatch $ functor (undefined :: List' (String, String, String))
-    quickBatch $ applicative (undefined :: List' (String, String, String))
+    quickBatch $ applicative (undefined :: List' (Int, Int, Int))
     quickBatch (traversable (undefined :: List' (Int, String, Maybe String)))
