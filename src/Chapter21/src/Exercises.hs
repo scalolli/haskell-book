@@ -4,6 +4,7 @@ module Exercises where
   import Test.QuickCheck.Classes
   import Test.QuickCheck.Checkers
   import Data.Semigroup
+  import Control.Applicative
 
   data Two a b = Two a b deriving (Eq, Show)
 
@@ -155,6 +156,38 @@ module Exercises where
     traverse f (Yep a)    = Yep <$> f a
     traverse f Nada       = pure Nada
 
+--     Instances for Three
+
+  data Three a b c = Three a b c deriving (Eq, Show)
+
+  instance (Monoid a, Monoid b, Monoid c) => Monoid (Three a b c) where
+    mempty = Three mempty mempty mempty
+
+    (Three a b c) `mappend` (Three d e f) = Three (a `mappend` d) (b `mappend` e) (c `mappend` f)
+
+  instance Functor (Three a b) where
+    fmap f (Three a b c) = Three a b (f c)
+
+
+  instance (Monoid a, Monoid b) => Applicative (Three a b) where
+    pure = Three mempty mempty
+
+    (Three a b f) <*> (Three c d e) = Three (a `mappend` c) (b `mappend` d) (f e)
+
+
+  instance Foldable (Three a b) where
+    foldMap f (Three a b c) = f c
+
+
+  instance Traversable (Three a b) where
+    traverse f (Three a b c) = (Three a b) <$> f c
+
+  instance (Arbitrary a, Arbitrary b, Arbitrary c) => Arbitrary (Three a b c) where
+    arbitrary = liftA3 Three arbitrary arbitrary arbitrary
+
+  instance (Eq a, Eq b, Eq c) => EqProp (Three a b c) where
+    (=-=) = eq
+
   chapter21Exercises :: IO ()
   chapter21Exercises = do
     quickBatch (traversable identityTrigger)
@@ -168,5 +201,9 @@ module Exercises where
     quickBatch $ (applicative (undefined :: Optional (Int, Int, String)))
     quickBatch $ (traversable (undefined :: Optional (Int, Int, Maybe String)))
 
+    quickBatch $ (monoid (undefined :: (Three String String String)))
+    quickBatch $ (functor (undefined :: Three String String (String, String, String)))
+    quickBatch $ (applicative (undefined :: Three String String (String, String, String)))
+    quickBatch $ (traversable (undefined :: Three String String (String, String, Maybe String)))
 
 
