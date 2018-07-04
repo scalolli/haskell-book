@@ -188,6 +188,60 @@ module Exercises where
   instance (Eq a, Eq b, Eq c) => EqProp (Three a b c) where
     (=-=) = eq
 
+-- instances for Pair
+
+  data Pair a b = Pair a b deriving (Eq, Show)
+
+  instance (Monoid a, Monoid b) =>  Monoid (Pair a b) where
+    mempty = Pair mempty mempty
+
+    (Pair a b) `mappend` (Pair c d) = Pair (a `mappend` c) (b `mappend` d)
+
+  instance Functor (Pair a) where
+    fmap f (Pair a b) = Pair a (f b)
+
+  instance Monoid a => Applicative (Pair a) where
+    pure = Pair mempty
+
+    (Pair a f) <*> (Pair b c) = Pair (a `mappend` b) (f c)
+
+  instance Foldable (Pair a) where
+    foldMap f (Pair a b) = f b
+
+  instance Traversable (Pair a) where
+    traverse f (Pair a b) = Pair a <$> f b
+
+  instance (Eq a, Eq b) => EqProp (Pair a b) where
+    (=-=) = eq
+
+  instance (Arbitrary a, Arbitrary b) => Arbitrary (Pair a b) where
+    arbitrary = Pair <$> arbitrary <*> arbitrary
+
+-- instances for Big
+
+  data Big a b = Big a b b deriving (Eq, Show)
+
+  instance (Monoid a, Monoid b) => Monoid (Big a b) where
+    mempty = Big mempty mempty mempty
+
+    (Big a b c) `mappend` (Big d e f) = Big (a `mappend` d) (b `mappend` e) (c `mappend` f)
+
+  instance Functor (Big a) where
+    fmap f (Big a b c) = Big a (f b) (f c)
+
+
+  instance Monoid a => Applicative (Big a) where
+    pure a = Big mempty a a
+
+    (Big a f g) <*> (Big b c d) = Big (a `mappend` b) (f c) (g d)
+
+  instance (Arbitrary a, Arbitrary b) => Arbitrary (Big a b) where
+    arbitrary = liftA3 Big arbitrary arbitrary arbitrary
+
+  instance (Eq a, Eq b) => EqProp (Big a b) where
+    (=-=) = eq
+
+
   chapter21Exercises :: IO ()
   chapter21Exercises = do
     quickBatch (traversable identityTrigger)
@@ -205,5 +259,14 @@ module Exercises where
     quickBatch $ (functor (undefined :: Three String String (String, String, String)))
     quickBatch $ (applicative (undefined :: Three String String (String, String, String)))
     quickBatch $ (traversable (undefined :: Three String String (String, String, Maybe String)))
+
+    quickBatch $ (monoid (undefined :: (Pair String String)))
+    quickBatch $ functor (undefined :: Pair String (String, String, String))
+    quickBatch $ applicative (undefined :: Pair String (String, String, String))
+    quickBatch (traversable (undefined :: Pair String (Int, String, Maybe String)))
+
+    quickBatch $ (monoid (undefined :: (Big String String)))
+    quickBatch $ functor (undefined :: Big String (String, String, String))
+    quickBatch $ applicative (undefined :: Big String (String, String, String))
 
 
