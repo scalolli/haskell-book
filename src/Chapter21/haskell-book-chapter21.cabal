@@ -37,7 +37,8 @@ library
     Intermission,
     MyList,
     Exercises,
-    SkiFree
+    SkiFree,
+    Tree
 
   default-language: Haskell2010
 
