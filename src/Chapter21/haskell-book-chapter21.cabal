@@ -36,7 +36,8 @@ library
   exposed-modules:
     Intermission,
     MyList,
-    Exercises
+    Exercises,
+    SkiFree
 
   default-language: Haskell2010
 
