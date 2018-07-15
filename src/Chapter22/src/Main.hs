@@ -4,4 +4,4 @@ module Main where
   main = do
     line <- getLine
     putStrLn ("Hello, your line is " ++ line)
-    putStrLn "Welcome to Chapter21 !"
+    putStrLn "Welcome to Chapter22 !"
