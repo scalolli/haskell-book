@@ -4,7 +4,7 @@ module Intermission where
 import Data.Char
 import Control.Applicative
 
-newtype Reader r a = Reader { runReader :: r -> a }
+newtype MyReader r a = MyReader { runMyReader :: r -> a }
 
 cap :: [Char] -> [Char]
 cap xs = map toUpper xs
@@ -21,8 +21,8 @@ fmapped = fmap rev cap
 tuppled :: [Char] -> ([Char], [Char])
 tuppled = liftA2 (,) rev cap
 
-ask :: Reader a a
-ask = Reader id
+ask :: MyReader a a
+ask = MyReader id
 
 newtype HumanName = HumanName String deriving (Eq, Show)
 
@@ -47,25 +47,25 @@ myLiftA2 :: Applicative f =>
     -> f a -> f b -> f c
 myLiftA2 f fa fb = f <$> fa <*> fb
 
-asks :: (r -> a) -> Reader r a
-asks f = Reader f
+asks :: (r -> a) -> MyReader r a
+asks f = MyReader f
 
-instance Functor (Reader r) where   
-    fmap f (Reader g) = Reader (f . g)
+instance Functor (MyReader r) where   
+    fmap f (MyReader g) = MyReader (f . g)
 
-instance Applicative (Reader r) where   
-    pure :: a -> Reader r a
-    pure a = Reader (\x -> a)
+instance Applicative (MyReader r) where   
+    pure :: a -> MyReader r a
+    pure a = MyReader (\x -> a)
 
-    (<*>) :: Reader r (a -> b) -> Reader r a -> Reader r b
-    (<*>) (Reader f) (Reader g) = Reader (\r -> f r (g r))
+    (<*>) :: MyReader r (a -> b) -> MyReader r a -> MyReader r b
+    (<*>) (MyReader f) (MyReader g) = MyReader (\r -> f r (g r))
 
-instance Monad (Reader r) where 
-    return :: a -> Reader r a
-    return a = Reader (\x -> a)
+instance Monad (MyReader r) where 
+    return :: a -> MyReader r a
+    return a = MyReader (\x -> a)
 
-    (>>=) :: Reader r a -> (a -> Reader r b) -> (Reader r b)
-    (>>=) (Reader f) g = Reader $ \r -> runReader (g (f r)) $ r
+    (>>=) :: MyReader r a -> (a -> MyReader r b) -> (MyReader r b)
+    (>>=) (MyReader f) g = MyReader $ \r -> runMyReader (g (f r)) $ r
 
 foo :: (Functor f, Num a) => f a -> f a
 foo f = fmap (+1) f
@@ -75,3 +75,6 @@ bar r t = (r, length t)
 
 froot :: Num a => [a] -> ([a], Int)
 froot xs = bar (foo xs) xs
+
+flip :: (a -> b -> c) -> b -> a -> c
+flip f a b = f b a

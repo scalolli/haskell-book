@@ -34,7 +34,8 @@ library
       , mtl
 
   exposed-modules:
-    Intermission
+     Intermission
+   , CReader
     
   default-language: Haskell2010
 
