@@ -36,6 +36,7 @@ library
   exposed-modules:
      Intermission
    , CReader
+   , ReaderPractice
     
   default-language: Haskell2010
 
