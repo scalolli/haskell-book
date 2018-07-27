@@ -41,6 +41,11 @@ fromMaybe :: a -> Maybe a -> a
 fromMaybe a Nothing  = a
 fromMaybe a (Just b) = b
 
+sequA :: Integral a => a -> [Bool]
+sequA m = sequenceA [(>3), (<8), even] m
+
+s' :: Maybe Integer
+s' = summed <$> ((,) <$> xs <*> ys)
 
 readerMain :: IO ()
 readerMain = do
@@ -52,5 +57,6 @@ readerMain = do
  print $ fmap summed ((,) <$> xs <*> zs)
  print $ bolt 7
  print $ fmap bolt z
-
+ print $ fmap (foldl (&&) True) sequA $ 4
+ print $ (foldl (&&) True) <$> sequA $ 1
 
